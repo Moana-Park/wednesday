@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>솜즈 의료진 전용 - 도입 및 처방 안내</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4A148C;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4A148C;
+        }
+
+        .btn-home {
+            background: #2B4C7E;
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-home:hover {
+            background: #1a2f4d;
+            color: white !important;
+        }
+
+        /* Top Button */
+        .top-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #4A148C;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .top-button:hover {
+            background: #6A1B9A;
+            transform: translateY(-3px);
+        }
+
+        .top-button.show {
+            display: flex;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 100%);
+            color: white;
+            padding: 120px 2rem 80px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: #4A148C;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: #666;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Introduction Section */
+        .introduction {
+            background: white;
+        }
+
+        .process-list {
+            max-width: 800px;
+            margin: 3rem auto;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2.5rem;
+        }
+
+        .process-item {
+            padding: 1.5rem;
+            border-left: 4px solid #4A148C;
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .process-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .process-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #4A148C;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .process-text {
+            display: inline;
+            color: #333;
+            font-size: 1.05rem;
+        }
+
+        /* Application Section */
+        .application {
+            background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .application h2 {
+            color: white;
+        }
+
+        .application-info {
+            max-width: 700px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .application-info p {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        .btn-apply {
+            display: inline-block;
+            background: white;
+            color: #4A148C;
+            padding: 1.2rem 3rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Prescription Section */
+        .prescription {
+            background: #f8f9fa;
+        }
+
+        .prescription-steps {
+            max-width: 900px;
+            margin: 3rem auto;
+        }
+
+        .step-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number-large {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1.5rem;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            color: #4A148C;
+            font-weight: 600;
+        }
+
+        .step-content {
+            padding-left: 65px;
+        }
+
+        .step-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .step-content li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .step-content li:before {
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: #4A148C;
+        }
+
+        .info-box {
+            background: #e8eaf6;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border-left: 4px solid #4A148C;
+        }
+
+        .info-box strong {
+            color: #4A148C;
+        }
+
+        /* Why Somz Section */
+        .why-somz {
+            background: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #4A148C;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-desc {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .content-box {
+            background: #f8f9fa;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .content-box h3 {
+            color: #4A148C;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-box p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .program-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .program-step {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .program-step:hover {
+            border-color: #4A148C;
+            transform: translateY(-3px);
+        }
+
+        .program-step-num {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: #4A148C;
+            color: white;
+            border-radius: 50%;
+            line-height: 35px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .program-step-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .limitations-list {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .limitations-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .limitations-list li {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .limitations-list li:last-child {
+            border-bottom: none;
+        }
+
+        .limitations-list li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .highlight-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #4A148C;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+            }
+
+            .step-content {
+                padding-left: 0;
+            }
+
+            .top-button {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">SOMZ 의료진 전용</div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+            <div class="nav-links">
+                <a href="#introduction" class="btn-home">환자용 페이지로</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top Button -->
+    <button class="top-button" id="topButton" onclick="scrollToTop()">
+        ↑
+    </button>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">의료진 전용 페이지</div>
+            <h1>우리 병원에서<br>솜즈 처방 도입하기</h1>
+            <p>체계적인 불면증 인지행동치료를<br>환자에게 제공하세요</p>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="introduction" id="introduction">
+        <div class="container">
+            <h2 class="section-title">솜즈 도입방법</h2>
+            <p class="section-subtitle">
+                우리 병원에서 솜즈 처방을 도입하는 방법
+            </p>
+
+            <div class="process-list">
+                <div class="process-item">
+                    <span class="process-number">①</span>
+                    <span class="process-text">혁신의료기술 실시기관 신고</span>
+                </div>
+                <div class="process-item">
+                    <span class="process-number">②</span>
+                    <span class="process-text">비급여 신고 (건강보험심사평가원 포털)</span>
+                </div>
+                <div class="process-item">
+                    <span class="process-number">③</span>
+                    <span class="process-text">혁신의료기술 건강보험 임시등재 참여 신청</span>
+                </div>
+                <div class="process-item">
+                    <span class="process-number">④</span>
+                    <span class="process-text">병원 관리자 생성 및 의료진 계정 생성 (Aimnext 의료진 관리자 웹)</span>
+                </div>
+                <div class="process-item">
+                    <span class="process-number">⑤</span>
+                    <span class="process-text">환자 동의서 및 처방</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Section -->
+    <section class="application">
+        <div class="container">
+            <h2>신청서 작성하기</h2>
+            
+            <div class="application-info">
+                <p><strong>📋 신청서 작성 소요 시간:</strong> 약 10분</p>
+                <p>간편하게 작성하고 신청해보세요.</p>
+                <p style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.3);">
+                    신청서 작성 완료 후 담당자가 확인하여 연락을 드립니다.<br>
+                    <span style="font-size: 0.95rem;">(영업일 기준 5~7일 소요 예상)</span>
+                </p>
+            </div>
+
+            <a href="https://forms.google.com" target="_blank" class="btn-apply">
+                📝 신청서 작성하러 가기
+            </a>
+        </div>
+    </section>
+
+    <!-- Prescription Section -->
+    <section class="prescription" id="prescription">
+        <div class="container">
+            <h2 class="section-title">도입 이후 프로세스</h2>
+            <p class="section-subtitle">처방하기</p>
+
+            <div class="prescription-steps">
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number-large">①</div>
+                        <div class="step-title">환자 등록</div>
+                    </div>
+                    <div class="step-content">
+                        <p>의료진 관리자에서 환자를 등록하면 바로 처방할 수 있어요.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number-large">②</div>
+                        <div class="step-title">진료 및 상담</div>
+                    </div>
+                    <div class="step-content">
+                        <p>환자를 진료 및 상담하고 처방을 결정합니다.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number-large">③</div>
+                        <div class="step-title">솜즈 처방하기</div>
+                    </div>
+                    <div class="step-content">
+                        <p>환자 등록 완료 후 솜즈를 처방합니다.</p>
+                        <div class="info-box">
+                            <p><strong>솜즈 EDI 코드:</strong> 00000</p>
+                            <p><strong>디지털 치료기기 처방료:</strong> 00000</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number-large">④</div>
+                        <div class="step-title">서류 제공</div>
+                    </div>
+                    <div class="step-content">
+                        <p>진료비 세부 산정 내역서 1부를 환자에게 제공합니다.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number-large">⑤</div>
+                        <div class="step-title">후속 진료</div>
+                    </div>
+                    <div class="step-content">
+                        <ul>
+                            <li>담당의 재량으로 진행해주세요.</li>
+                            <li>F/U 시 '디지털 치료기기 효과 평가료'를 청구할 수 있어요.</li>
+                        </ul>
+                        <div class="info-box">
+                            <p><strong>효과평가료:</strong> TU002</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Somz for Doctors Section -->
+    <section class="why-somz" id="why-somz">
+        <div class="container">
+            <h2 class="section-title">왜 솜즈인가요?</h2>
+            <p class="section-subtitle">
+                불면증 제대로 치료받지 못하고 있습니다.<br>
+                솜즈는 제대로된 치료를 위해 만들어졌습니다.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10%</div>
+                    <div class="stat-label">불면증 유병률</div>
+                    <p class="stat-desc">전체 성인 인구 대비</p>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5%</div>
+                    <div class="stat-label">진료를 받는 비율</div>
+                    <p class="stat-desc">그중 진료를 받는 비율</p>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.1%</div>
+                    <div class="stat-label">인지행동치료 비율</div>
+                    <p class="stat-desc">그중 CBT-I를 받는 비율</p>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>솜즈 솔루션</h3>
+                <p>
+                    솜즈는 웨어러블 디바이스 기반 Cognitive Behavioral Therapy와<br>
+                    Circadian Rhythm을 결합한 에임넥스트만의 독자적인 불면증 치료 솔루션입니다.
+                </p>
+            </div>
+
+            <div class="content-box">
+                <h3>기존 인지행동치료의 한계</h3>
+                <div class="limitations-list">
+                    <ul>
+                        <li>저수가로 인한 경제성 문제</li>
+                        <li>부가적 훈련이 필요한 전문성 요구</li>
+                        <li>진료시간 부족으로 인한 실행의 어려움</li>
+                    </ul>
+                </div>
+                <p style="margin-top: 1.5rem;">
+                    불면증이 있음에도 치료를 받지 않는 경우가 많으며,<br>
+                    치료를 받아도 표준치료인 인지행동치료를 받지 못하고 있는 실정입니다.
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>해서, 솜즈는</h3>
+                <p>
+                    이런 부분을 개선하고자 체계적인 알고리즘으로 구현하여<br>
+                    불면증 개선 솔루션을 만들었습니다.
+                </p>
+            </div>
+
+            <div class="content-box">
+                <h3>솜즈의 체계적인 6단계 프로그램</h3>
+                <div class="program-flow">
+                    <div class="program-step">
+                        <div class="program-step-num">1</div>
+                        <div class="program-step-title">기초교육</div>
+                        <p class="program-step-desc">불면증과 인지행동치료에 대한 이해</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">2</div>
+                        <div class="program-step-title">자극 조절 요법</div>
+                        <p class="program-step-desc">수면 자극 조건들을 건강한 습관과 연관시키는 행동치료</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">3</div>
+                        <div class="program-step-title">수면제한 요법</div>
+                        <p class="program-step-desc">수면 효율을 최적화시키는 TIB(침상시간) 권고</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">4</div>
+                        <div class="program-step-title">건강한 수면습관 교육</div>
+                        <p class="program-step-desc">수면을 위한 건강한 습관 교육 & 관리</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">5</div>
+                        <div class="program-step-title">이완요법</div>
+                        <p class="program-step-desc">잠을 잘 이룰 수 있도록 신체 이완</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">6</div>
+                        <div class="program-step-title">인지치료법</div>
+                        <p class="program-step-desc">수면에 대한 인지 오류 탐색 및 교정</p>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 2rem; font-weight: 600; color: #4A148C; font-size: 1.1rem;">
+                    6단계의 체계적인 솔루션을 제공합니다
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is Somz Section -->
+    <section class="what-somz" style="background: #f8f9fa; padding: 80px 2rem;" id="what-somz">
+        <div class="container">
+            <h2 class="section-title">솜즈란 무엇인가요?</h2>
+            <p class="section-subtitle">
+                솜즈는 불면증 인지행동치료법(CBT-I)을 모바일 APP에<br>
+                체계적인 알고리즘으로 구현한 2등급 소프트웨어 의료기기입니다.<br>
+                6~9주간 교육, 실시간 피드백, 행동중재 및 푸시 알림을 제공하여<br>
+                수면효율을 증가시키고 불면증을 개선합니다.
+            </p>
+
+            <div class="content-box" style="background: white;">
+                <h3>체계적인 6주 치료 프로그램</h3>
+                <div class="program-flow">
+                    <div class="program-step">
+                        <div class="program-step-num">1</div>
+                        <div class="program-step-title">기초교육</div>
+                        <p>수면일기 작성과 과제를 통한 피드백</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">2</div>
+                        <div class="program-step-title">자극 조절 & 수면제한요법</div>
+                        <p>수면일기 및 과제 수행, 개인 맞춤 피드백</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">3</div>
+                        <div class="program-step-title">수면습관 교육</div>
+                        <p>수면일기 및 과제 수행, 개인 맞춤 피드백</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">4</div>
+                        <div class="program-step-title">이완 요법</div>
+                        <p>수면일기 및 과제 수행, 개인 맞춤 피드백</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">5</div>
+                        <div class="program-step-title">인지치료</div>
+                        <p>수면일기 및 과제 수행, 개인 맞춤 피드백</p>
+                    </div>
+                    <div class="program-step">
+                        <div class="program-step-num">6</div>
+                        <div class="program-step-title">재발 방지 교육 & 종결</div>
+                        <p>수면일기 및 과제 수행, 개인 맞춤 피드백</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #f0f0f0;">
+                    최종적으로 6주간의 프로그램이 종료되면, 최종적인 결과지를 통해<br>
+                    불면증이 얼마나 개선되었는지 확인합니다.
+                </p>
+                <p style="margin-top: 1rem;">
+                    수면효율이 얼마나 개선되었는지, 잠드는데 걸린 시간,<br>
+                    잠에서 깨는 횟수 등이 어떻게 변화되었는지 한눈에 확인할 수 있습니다.
+                </p>
+                <p style="margin-top: 1rem; font-weight: 600; color: #4A148C; text-align: center; font-size: 1.1rem;">
+                    이를 통해 인지행동이 개선되고 불면증까지 개선되는 방법입니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section style="background: white; padding: 80px 2rem;" id="contact">
+        <div class="container">
+            <h2 class="section-title">문의처 (고객센터)</h2>
+            <p class="section-subtitle">궁금한 점은 아래 고객센터로 문의사항을 보내주세요</p>
+
+            <div style="max-width: 600px; margin: 2rem auto; background: #f8f9fa; padding: 2.5rem; border-radius: 15px; text-align: center;">
+                <div style="margin: 1.5rem 0;">
+                    <div style="font-weight: 600; color: #4A148C; font-size: 1.1rem; margin-bottom: 0.5rem;">📧 이메일</div>
+                    <div style="font-size: 1.2rem; color: #333;">info@aimnext.co.kr</div>
+                </div>
+                <div style="margin: 1.5rem 0;">
+                    <div style="font-weight: 600; color: #4A148C; font-size: 1.1rem; margin-bottom: 0.5rem;">📞 대표전화</div>
+                    <div style="font-size: 1.2rem; color: #333;">02-3015-7200</div>
+                </div>
+                <div style="font-size: 0.95rem; color: #666; margin-top: 2rem;">
+                    평일 09:00 - 18:00<br>
+                    (점심시간 12:00 - 13:00 제외)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>SOMZ 의료진 전용</h3>
+                <p style="margin-top: 1rem;">
+                    불면증 인지행동치료<br>
+                    디지털 솔루션
+                </p>
+            </div>
+            <div class="footer-section">
+                <h3>바로가기</h3>
+                <a href="somz-main-v2.html">환자용 페이지</a>
+                <a href="#introduction">도입방법</a>
+                <a href="#prescription">처방하기</a>
+                <a href="#why-somz">왜 솜즈인가요</a>
+            </div>
+            <div class="footer-section">
+                <h3>지원</h3>
+                <a href="#">처방 가이드</a>
+                <a href="#">교육 자료</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-section">
+                <h3>회사 정보</h3>
+                <p>에임넥스트</p>
+                <p>이메일: info@aimnext.co.kr</p>
+                <p>전화: 02-3015-7200</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Aimnext. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            alert('모바일 메뉴');
+        }
+
+        // Top Button Visibility
+        window.addEventListener('scroll', function() {
+            const topButton = document.getElementById('topButton');
+            if (window.pageYOffset > 300) {
+                topButton.classList.add('show');
+            } else {
+                topButton.classList.remove('show');
+            }
+        });
+
+        // Scroll to Top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>

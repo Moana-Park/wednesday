@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>솜즈 SOMZ - 불면증 디지털치료기기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2B4C7E;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2B4C7E;
+        }
+
+        .btn-doctor {
+            background: #4A148C;
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-doctor:hover {
+            background: #6A1B9A;
+            color: white !important;
+        }
+
+        /* Top Button */
+        .top-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: #2B4C7E;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .top-button:hover {
+            background: #1a2f4d;
+            transform: translateY(-3px);
+        }
+
+        .top-button.show {
+            display: flex;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2B4C7E 0%, #1a2f4d 100%);
+            color: white;
+            padding: 120px 2rem 80px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge-item {
+            background: rgba(255,255,255,0.15);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            font-size: 1.05rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #2B4C7E;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #2B4C7E;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: #2B4C7E;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.15rem;
+            color: #666;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Why Somz Section */
+        .why-somz {
+            background: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #2B4C7E;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-desc {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .content-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .content-box h3 {
+            color: #2B4C7E;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-box p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .key-point {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #2B4C7E;
+        }
+
+        .key-point-title {
+            font-weight: 600;
+            color: #2B4C7E;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-cell {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .comparison-cell:first-child {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+        }
+
+        .comparison-header {
+            background: #2B4C7E;
+            color: white;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #2B4C7E 0%, #4A148C 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .highlight-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* What is Somz Section */
+        .what-somz {
+            background: white;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .program-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            transition: transform 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            border-color: #2B4C7E;
+        }
+
+        .program-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #2B4C7E;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .program-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2B4C7E;
+            margin-bottom: 0.8rem;
+        }
+
+        .program-desc {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .app-showcase {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 3rem 0;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-showcase-placeholder {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* How to Start Section */
+        .how-to-start {
+            background: #f8f9fa;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .step-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2B4C7E 0%, #4A148C 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            color: #2B4C7E;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* Customer Service Section */
+        .customer-service {
+            background: white;
+        }
+
+        .contact-info {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: #f8f9fa;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .contact-item {
+            margin: 1.5rem 0;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: #2B4C7E;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background: #f8f9fa;
+        }
+
+        .faq-list {
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            display: none;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #2B4C7E;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            color: #888;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+            }
+
+            .comparison-row {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-cell:first-child {
+                background: #2B4C7E;
+                color: white;
+                text-align: center;
+            }
+
+            .top-button {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">SOMZ</div>
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#why-somz">why 솜즈</a></li>
+                <li><a href="#what-somz">6주 프로그램</a></li>
+                <li><a href="#how-to-start">처방방법</a></li>
+                <li><a href="#customer-service">고객센터</a></li>
+                <li><a href="#faq" class="btn-doctor">의료진 전용</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Top Button -->
+    <button class="top-button" id="topButton" onclick="scrollToTop()">
+        ↑
+    </button>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-badge">대한민국 식약처 허가 1호 불면증 디지털치료기기</div>
+            <h1>약이 아닌, 근거있는 치료 '솜즈'</h1>
+            <p class="subtitle">건강한 수면, Somzz와 함께</p>
+            <p>불면증 인지행동치료법(CBT-I)을 모바일로 구현한 임상 검증된 디지털 치료기기</p>
+            
+            <div class="hero-badges">
+                <div class="hero-badge-item">🏥 식약처 허가</div>
+                <div class="hero-badge-item">✅ 임상 검증</div>
+                <div class="hero-badge-item">📅 6주 치료 프로그램</div>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="#how-to-start" class="btn-primary">솜즈 시작하기</a>
+                <a href="https://soldoc.co.kr" target="_blank" class="btn-secondary">처방병원 찾기</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Somz Section -->
+    <section class="why-somz" id="why-somz">
+        <div class="container">
+            <h2 class="section-title">왜 솜즈인가요?</h2>
+            <p class="section-subtitle">
+                불면증은 흔하지만,<br>
+                제대로 된 치료를 받는 사람은 거의 없습니다.<br>
+                솜즈는 이 치료의 공백을 해결하기 위해 만들어졌습니다.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10%</div>
+                    <div class="stat-label">불면증 유병률</div>
+                    <p class="stat-desc">전체 성인 인구의 약 10%가<br>불면증을 겪고 있습니다</p>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5%</div>
+                    <div class="stat-label">진료 받는 비율</div>
+                    <p class="stat-desc">실제 의료기관에서<br>진료를 받는 비율</p>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.1%</div>
+                    <div class="stat-label">CBT-I 치료 비율</div>
+                    <p class="stat-desc">인지행동치료를 받는<br>비율은 단 0.1%</p>
+                </div>
+            </div>
+
+            <p style="text-align: center; font-size: 1.1rem; color: #555; margin: 2rem 0;">
+                불면증은 전체 성인 인구의 약 10%가 겪는 흔한 질환입니다.<br>
+                하지만 실제로 의료기관에서 진료를 받는 비율은 약 5%,<br>
+                인지행동치료(CBT-I)를 받는 비율은 0.1%에 불과합니다.
+            </p>
+
+            <div class="content-box">
+                <h3>인지행동치료가 다루는 핵심</h3>
+                <div class="key-points">
+                    <div class="key-point">
+                        <div class="key-point-title">💭 수면에 대한 잘못된 생각과 걱정</div>
+                    </div>
+                    <div class="key-point">
+                        <div class="key-point-title">🛏️ 잠을 방해하는 생활 습관과 행동</div>
+                    </div>
+                    <div class="key-point">
+                        <div class="key-point-title">⚡ 과도한 각성과 긴장 상태</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>왜 인지행동치료(CBT-I)가 중요한가요?</h3>
+                <p>
+                    불면증은 단순히 잠이 부족해서 생기는 문제가 아닙니다.<br>
+                    시간이 지날수록 '잠에 대한 불안', '잘 자야 한다는 압박', '잘못된 수면 습관'이 반복되며<br>
+                    생각과 행동이 불면을 유지하는 구조로 굳어집니다.
+                </p>
+                <p style="margin-top: 1.5rem; font-weight: 600; color: #2B4C7E; font-size: 1.2rem;">
+                    인지행동치료(CBT-I)는 이 구조 자체를 바꾸는 치료입니다.
+                </p>
+                <p style="margin-top: 1rem;">
+                    CBT-I는 '잠이 오게 만드는 치료'가 아니라,<br>
+                    잠을 방해하는 원인을 교정하는 치료입니다.
+                </p>
+            </div>
+
+            <div class="content-box">
+                <h3>약물 치료와 인지행동치료는 무엇이 다른가요?</h3>
+                <div class="comparison-table">
+                    <div class="comparison-row comparison-header">
+                        <div class="comparison-cell">구분</div>
+                        <div class="comparison-cell">약물 치료</div>
+                        <div class="comparison-cell">인지행동치료</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">치료 목적</div>
+                        <div class="comparison-cell">잠을 자게 함</div>
+                        <div class="comparison-cell">잠을 잘 자는 구조를 만듦</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">치료 초점</div>
+                        <div class="comparison-cell">신경억제를 통한 수면 유도</div>
+                        <div class="comparison-cell">생각·행동·습관 구조 교정</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">치료 방식</div>
+                        <div class="comparison-cell">복용 중심</div>
+                        <div class="comparison-cell">학습 + 행동 변화</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">효과 지속성</div>
+                        <div class="comparison-cell">단기적</div>
+                        <div class="comparison-cell">장기적으로 유지 가능</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell">근본 원인 개선</div>
+                        <div class="comparison-cell">어려움</div>
+                        <div class="comparison-cell">가능</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 2rem;">
+                    수면제는 일시적으로 잠을 유도하는 데 도움을 줄 수 있습니다.<br>
+                    그러나 시간이 지나면 '효과가 줄거나', '약에 의존하게 되거나',<br>
+                    '불면의 근본 원인은 그대로 남는' 경우가 많습니다.
+                </p>
+                <p style="margin-top: 1.5rem;">
+                    반면, CBT-I는 '수면에 대한 생각', '하루 생활 패턴', '잠을 대하는 방식' 자체를 바꾸어<br>
+                    치료가 끝난 이후에도 효과가 유지되는 치료로 권고됩니다.
+                </p>
+                <p style="margin-top: 1.5rem; font-weight: 600; color: #2B4C7E; font-size: 1.1rem;">
+                    그래서 불면증 진료 가이드라인에서는 CBT-I를 1차 표준 치료로 권고하고 있습니다.
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>그래서, 솜즈입니다</h3>
+                <p>
+                    문제는 '치료법이 없어서'가 아니라,<br>
+                    치료가 제대로 제공되기 어려운 환경에 있습니다.
+                </p>
+            </div>
+
+            <div class="content-box">
+                <h3>기존 대면 인지행동치료의 한계</h3>
+                <div class="key-points">
+                    <div class="key-point">
+                        <div class="key-point-title">💰 낮은 수가 구조</div>
+                    </div>
+                    <div class="key-point">
+                        <div class="key-point-title">👨‍⚕️ 치료자 의존도가 높은 훈련 방식</div>
+                    </div>
+                    <div class="key-point">
+                        <div class="key-point-title">⏰ 제한된 진료 시간</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 2rem;">
+                    기존 대면 인지행동치료는 '낮은 수가 구조', '치료자 의존도가 높은 훈련 방식', '제한된 진료시간' 등의 이유로<br>
+                    현실적인 제공이 어려운 것이 사실입니다.
+                </p>
+                <p style="margin-top: 1.5rem;">
+                    솜즈는 이러한 한계를 해결하기 위해<br>
+                    웨어러블 기반 데이터와 표준 인지행동치료(CBT-I), 그리고<br>
+                    생체리듬(Circadian Rhythm) 분석을 결합하여<br>
+                    불면증 치료 전 과정을 디지털 환경에서 제공하는 솔루션으로 개발되었습니다.
+                </p>
+                <p style="margin-top: 1.5rem; font-weight: 600; color: #2B4C7E; font-size: 1.2rem;">
+                    솜즈는 누구나, 어디서든, 표준 치료에 접근할 수 있도록 합니다.
+                </p>
+            </div>
+
+            <div class="app-showcase">
+                <div class="app-showcase-placeholder">
+                    [ 솜즈 앱 이미지 삽입 영역 ]
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is Somz Section -->
+    <section class="what-somz" id="what-somz">
+        <div class="container">
+            <h2 class="section-title">솜즈란 무엇인가요?</h2>
+            <p class="section-subtitle">
+                솜즈는 불면증 인지행동치료법(CBT-I)을 모바일 APP에<br>
+                체계적인 알고리즘으로 구현한 2등급 소프트웨어 의료기기입니다.<br>
+                6~9주간 교육, 실시간 피드백, 행동중재 및 푸시 알림을 제공하여<br>
+                수면효율을 증가시키고 불면증을 개선합니다.
+            </p>
+
+            <h3 style="text-align: center; font-size: 1.8rem; color: #2B4C7E; margin: 3rem 0 2rem;">
+                체계적인 6주 치료 프로그램을 제공합니다
+            </h3>
+
+            <div class="program-grid">
+                <div class="program-card">
+                    <div class="program-number">1</div>
+                    <div class="program-title">기초교육</div>
+                    <p class="program-desc">
+                        수면일기 작성과 과제를 통한<br>
+                        피드백을 진행합니다.
+                    </p>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-number">2</div>
+                    <div class="program-title">자극 조절 & 수면제한요법</div>
+                    <p class="program-desc">
+                        수면일기 및 과제 수행,<br>
+                        개인 맞춤 피드백
+                    </p>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-number">3</div>
+                    <div class="program-title">수면습관 교육</div>
+                    <p class="program-desc">
+                        수면일기 및 과제 수행,<br>
+                        개인 맞춤 피드백
+                    </p>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-number">4</div>
+                    <div class="program-title">이완 요법</div>
+                    <p class="program-desc">
+                        수면일기 및 과제 수행,<br>
+                        개인 맞춤 피드백
+                    </p>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-number">5</div>
+                    <div class="program-title">인지치료</div>
+                    <p class="program-desc">
+                        수면일기 및 과제 수행,<br>
+                        개인 맞춤 피드백
+                    </p>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-number">6</div>
+                    <div class="program-title">재발 방지 교육 & 종결</div>
+                    <p class="program-desc">
+                        수면일기 및 과제 수행,<br>
+                        개인 맞춤 피드백
+                    </p>
+                </div>
+            </div>
+
+            <div class="app-showcase">
+                <div class="app-showcase-placeholder">
+                    [ 6주 프로그램 후 결과 페이지 이미지 ]
+                </div>
+            </div>
+
+            <div class="content-box" style="margin-top: 3rem;">
+                <h3>치료 완료 후</h3>
+                <p>
+                    최종적으로 6주간의 프로그램이 종료되면, 최종적인 결과지를 통해<br>
+                    불면증이 얼마나 개선되었는지 확인합니다.
+                </p>
+                <p style="margin-top: 1rem;">
+                    수면효율이 얼마나 개선되었는지, 잠드는데 걸린 시간, 잠에서 깨는 횟수 등이<br>
+                    어떻게 변화되었는지 한눈에 확인할 수 있습니다.
+                </p>
+                <p style="margin-top: 1rem; font-weight: 600; color: #2B4C7E; text-align: center; font-size: 1.1rem;">
+                    이를 통해 인지행동이 개선되고 불면증까지 개선됩니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Start Section -->
+    <section class="how-to-start" id="how-to-start">
+        <div class="container">
+            <h2 class="section-title">솜즈, 이렇게 시작하세요</h2>
+            <p class="section-subtitle">간단한 3단계로 솜즈 치료를 시작할 수 있습니다</p>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-icon">1</div>
+                    <h3 class="step-title">병원 방문</h3>
+                    <p>처방 가능한 병원을 찾아<br>진료를 받으세요</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-icon">2</div>
+                    <h3 class="step-title">의사 처방</h3>
+                    <p>의사의 진단 후<br>솜즈 처방을 받으세요</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-icon">3</div>
+                    <h3 class="step-title">앱 사용</h3>
+                    <p>솜즈 앱을 다운로드하고<br>6주 프로그램을 시작하세요</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="https://soldoc.co.kr" target="_blank" class="btn-primary" style="color: #2B4C7E;">
+                    처방병원 찾기
+                </a>
+            </div>
+
+            <div style="margin-top: 3rem;">
+                <h3 style="text-align: center; font-size: 1.5rem; color: #2B4C7E; margin-bottom: 2rem;">
+                    가까운 처방병원 찾기
+                </h3>
+                <div style="width: 100%; height: 500px; border-radius: 15px; overflow: hidden; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05);">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">
+                            [ 처방병원 구글 맵 영역 ]
+                        </div>
+                        <p style="font-size: 0.95rem; color: #999;">
+                            구글 맵 API를 연동하여 실제 병원 위치를 표시합니다
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Service Section -->
+    <section class="customer-service" id="customer-service">
+        <div class="container">
+            <h2 class="section-title">고객센터</h2>
+            <p class="section-subtitle">궁금한 점은 아래 고객센터로 문의사항을 보내주세요</p>
+
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-label">📧 이메일</div>
+                    <div class="contact-value">info@aimnext.co.kr</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">📞 대표전화</div>
+                    <div class="contact-value">02-3015-7200</div>
+                </div>
+                <div class="contact-item" style="font-size: 0.95rem; color: #666; margin-top: 2rem;">
+                    평일 09:00 - 18:00<br>
+                    (점심시간 12:00 - 13:00 제외)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">자주 묻는 질문</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>솜즈는 어떤 서비스인가요?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        솜즈는 불면증 인지행동치료법(CBT-I)을 모바일로 구현한 디지털 치료기기입니다. 
+                        식약처 허가를 받은 의료기기로, 6주간의 체계적인 프로그램을 통해 불면증을 개선합니다.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>치료 기간은 얼마나 되나요?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        기본 프로그램은 6주이며, 필요에 따라 최대 9주까지 진행될 수 있습니다. 
+                        매주 정해진 교육과 과제를 수행하면서 점진적으로 수면 습관을 개선해 나갑니다.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>약물 치료와 병행할 수 있나요?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        네, 가능합니다. 다만 의사와 상담하여 적절한 치료 계획을 세우는 것이 중요합니다. 
+                        많은 경우 솜즈 치료를 통해 점진적으로 약물 의존도를 줄여갈 수 있습니다.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>어디서 처방받을 수 있나요?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        전국 제휴 병원에서 처방받으실 수 있습니다. 
+                        '처방병원 찾기' 버튼을 통해 가까운 병원을 확인하실 수 있습니다.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>비용은 얼마인가요?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        솜즈는 혁신의료기술로 건강보험 임시등재되어 있습니다. 
+                        구체적인 비용은 병원마다 다를 수 있으니 방문하시는 병원에 문의해 주세요.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>SOMZ</h3>
+                <p style="margin-top: 1rem;">
+                    약이 아닌, 근거있는 치료<br>
+                    건강한 수면, Somzz와 함께
+                </p>
+            </div>
+            <div class="footer-section">
+                <h3>바로가기</h3>
+                <a href="#why-somz">why 솜즈</a>
+                <a href="#what-somz">6주 프로그램</a>
+                <a href="#how-to-start">처방방법</a>
+                <a href="#customer-service">고객센터</a>
+            </div>
+            <div class="footer-section">
+                <h3>의료진</h3>
+                <a href="somz-doctor-v2.html">의료진 전용 페이지</a>
+                <a href="#">처방 가이드</a>
+                <a href="#">도입 문의</a>
+            </div>
+            <div class="footer-section">
+                <h3>회사 정보</h3>
+                <p>에임넥스트</p>
+                <p>이메일: info@aimnext.co.kr</p>
+                <p>전화: 02-3015-7200</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Aimnext. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            const symbol = element.querySelector('span:last-child');
+            
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.faq-question span:last-child').textContent = '+';
+            });
+            
+            // Open clicked item if it wasn't active
+            if (!isActive) {
+                faqItem.classList.add('active');
+                symbol.textContent = '-';
+            }
+        }
+
+        // Top Button Visibility
+        window.addEventListener('scroll', function() {
+            const topButton = document.getElementById('topButton');
+            if (window.pageYOffset > 300) {
+                topButton.classList.add('show');
+            } else {
+                topButton.classList.remove('show');
+            }
+        });
+
+        // Scroll to Top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    document.getElementById('navLinks').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

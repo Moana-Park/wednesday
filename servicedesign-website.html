@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>서비스설계소 | 기획부터 개발, 유지보수까지</title>
+<meta name="description" content="15년차 서비스·플랫폼 기획자가 기획서, 화면설계서, 디자인, 개발, 유지보수까지 한 팀으로 맡습니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --font: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  --paper: #F4F5F2; --surface: #FFFFFF; --ink: #17202B; --muted: #525C66;
+  --line: #D3D8D2; --line-strong: #AEB5AD; --wire: #EEF0EC; --wire-bar: #C9CFC8;
+  --accent: #2446D8; --accent-hover: #1A34A8; --accent-ink: #1A34A8; --accent-soft: #E6EBFC; --on-accent: #FFFFFF;
+  --marker: #F4C542; --on-marker: #17202B;
+  --dark: #17202B; --dark-text: #EEF0EC; --dark-muted: #AEB6BF; --dark-line: #3A4552; --dark-accent: #9DB0FF;
+  --ok-bg: #E3F1E6; --ok-fg: #1F6B35; --wait-bg: #EEF0EC; --wait-fg: #525C66; --err: #B42318;
+  --shadow: 0 10px 30px rgba(23, 32, 43, 0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12171E; --surface: #1A212A; --ink: #E8ECEF; --muted: #A3ADB7;
+    --line: #2C3540; --line-strong: #4A5561; --wire: #232B34; --wire-bar: #3D4854;
+    --accent: #8CA5FF; --accent-hover: #A9BCFF; --accent-ink: #B4C4FF; --accent-soft: #1F2A4A; --on-accent: #0C1015;
+    --marker: #E9BE45; --on-marker: #17202B;
+    --dark: #0C1015; --dark-text: #E8ECEF; --dark-muted: #A3ADB7; --dark-line: #2C3540; --dark-accent: #A9BCFF;
+    --ok-bg: #1B3325; --ok-fg: #93D9A8; --wait-bg: #232B34; --wait-fg: #A3ADB7; --err: #FF8F80;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12171E; --surface: #1A212A; --ink: #E8ECEF; --muted: #A3ADB7;
+  --line: #2C3540; --line-strong: #4A5561; --wire: #232B34; --wire-bar: #3D4854;
+  --accent: #8CA5FF; --accent-hover: #A9BCFF; --accent-ink: #B4C4FF; --accent-soft: #1F2A4A; --on-accent: #0C1015;
+  --marker: #E9BE45; --on-marker: #17202B;
+  --dark: #0C1015; --dark-text: #E8ECEF; --dark-muted: #A3ADB7; --dark-line: #2C3540; --dark-accent: #A9BCFF;
+  --ok-bg: #1B3325; --ok-fg: #93D9A8; --wait-bg: #232B34; --wait-fg: #A3ADB7; --err: #FF8F80;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; -webkit-font-smoothing: antialiased; }
+img, svg { max-width: 100%; }
+a { color: var(--accent-ink); }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3, p { margin: 0; }
+.wrap { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.muted { color: var(--muted); }
+
+/* header */
+.site-header { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--line); }
+.header-in { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; color: var(--ink); text-decoration: none; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+.brand .mark-dot { fill: var(--accent); }
+.brand .mark-line { stroke: var(--ink); }
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a:not(.btn) { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration: none; font-size: 16px; font-weight: 500; }
+.nav a:not(.btn):hover { text-decoration: underline; text-underline-offset: 5px; }
+.nav a[aria-current="page"]:not(.btn) { color: var(--accent-ink); font-weight: 700; }
+.menu-btn { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); cursor: pointer; }
+.menu-btn path { stroke: var(--ink); }
+@media (max-width: 960px) {
+  .menu-btn { display: inline-flex; }
+  .nav { display: none; position: absolute; left: 0; right: 0; top: 72px; flex-direction: column; align-items: stretch; gap: 0; padding: 8px clamp(20px, 5vw, 40px) 20px; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: var(--shadow); }
+  .nav.open { display: flex; }
+  .nav a:not(.btn) { min-height: 52px; border-bottom: 1px solid var(--line); font-size: 17px; }
+  .nav .btn { margin-top: 16px; }
+}
+
+/* buttons and controls */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 6px; border: 1px solid transparent; font-size: 16px; font-weight: 600; line-height: 1.2; text-decoration: none; cursor: pointer; transition: background-color 120ms ease; white-space: nowrap; }
+.btn-p { background: var(--accent); color: var(--on-accent); }
+.btn-p:hover { background: var(--accent-hover); color: var(--on-accent); }
+.btn-s { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn-s:hover { background: var(--wire); color: var(--ink); }
+.btn-o { background: var(--surface); color: var(--accent-ink); border-color: var(--accent); }
+.btn-o:hover { background: var(--accent-soft); }
+.btn-w { background: #FFFFFF; color: #17202B; }
+.btn-w:hover { background: #E6EBFC; color: #17202B; }
+.btn-lg { min-height: 56px; padding: 0 28px; font-size: 17px; }
+.btn-sm { min-height: 44px; padding: 0 18px; font-size: 15px; }
+.btn[disabled] { opacity: 0.55; cursor: progress; }
+.linkbtn { display: inline-flex; align-items: center; min-height: 44px; padding: 0; border: 0; background: none; color: var(--accent-ink); font-weight: 600; cursor: pointer; text-decoration: none; }
+.linkbtn:hover { text-decoration: underline; text-underline-offset: 4px; }
+.pills { display: flex; flex-wrap: wrap; gap: 10px; }
+.pill { min-height: 46px; padding: 0 18px; border-radius: 23px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: 15px; font-weight: 500; cursor: pointer; }
+.pill:hover { border-color: var(--accent); }
+.pill[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field label, .legend { font-size: 16px; font-weight: 600; }
+.input { width: 100%; min-height: 52px; padding: 12px 16px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); font-size: 16px; }
+textarea.input { min-height: 120px; line-height: 1.6; resize: vertical; }
+select.input { appearance: auto; }
+.input::placeholder { color: #6B747D; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.check input { width: 20px; height: 20px; margin: 0; accent-color: var(--accent); flex-shrink: 0; }
+fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+legend { padding: 0; margin-bottom: 12px; }
+.error { color: var(--err); font-size: 15px; font-weight: 500; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: clamp(22px, 3vw, 36px); }
+.card-strong { border: 2px solid var(--accent); }
+.badge { display: inline-flex; align-items: center; min-height: 28px; padding: 0 12px; border-radius: 14px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.badge-ok { background: var(--ok-bg); color: var(--ok-fg); }
+.badge-wait { background: var(--wait-bg); color: var(--wait-fg); }
+.badge-acc { background: var(--accent-soft); color: var(--accent-ink); }
+.note { padding: 14px 18px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-ink); font-size: 15px; line-height: 1.6; }
+
+/* sections */
+.sec { padding: clamp(64px, 8vw, 104px) 0; }
+.sec-white { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.sec-dark { background: var(--dark); color: var(--dark-text); }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 60px; margin-bottom: clamp(36px, 5vw, 56px); }
+.sec-head p { max-width: 560px; font-size: 18px; line-height: 1.7; color: var(--muted); }
+.sec-dark .sec-head p { color: var(--dark-muted); }
+.h-display { font-size: clamp(34px, 4.4vw, 56px); line-height: 1.26; font-weight: 700; letter-spacing: -0.03em; }
+.h-page { font-size: clamp(34px, 4vw, 52px); line-height: 1.25; font-weight: 700; letter-spacing: -0.03em; }
+.h-sec { font-size: clamp(28px, 3vw, 40px); line-height: 1.3; font-weight: 700; letter-spacing: -0.02em; }
+.page-head { padding: clamp(48px, 6vw, 80px) 0 32px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 60px; }
+.page-head p { max-width: 580px; font-size: 18px; line-height: 1.7; color: var(--muted); }
+main:focus { outline: none; }
+h1:focus { outline: none; }
+
+/* hero */
+.hero { padding: clamp(48px, 6vw, 80px) 0 clamp(64px, 8vw, 104px); display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 56px; }
+.hero-copy { flex: 1 1 420px; max-width: 580px; display: flex; flex-direction: column; gap: 28px; padding-top: 12px; }
+.hero-copy .lead { font-size: 19px; line-height: 1.75; color: var(--muted); }
+.hero-copy .fine { font-size: 15px; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.sheet { flex: 0 1 600px; min-width: 300px; background: var(--surface); border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; }
+.sheet-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--ink); }
+.sheet-meta div { padding: 12px 16px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid var(--line); }
+.sheet-meta div:last-child { border-right: 0; }
+.sheet-meta span:first-child { font-size: 12px; color: var(--muted); }
+.sheet-meta span:last-child { font-size: 14px; font-weight: 600; }
+.sheet-body { display: flex; flex-wrap: wrap; }
+.sheet-wire { flex: 1 1 290px; background: var(--wire); padding: 32px 0; display: flex; justify-content: center; }
+.phone { width: 232px; height: 440px; background: var(--surface); border: 1.5px solid var(--ink); border-radius: 26px; padding: 22px 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+.bar { height: 8px; border-radius: 2px; background: var(--wire-bar); }
+.bar-ink { height: 13px; border-radius: 2px; background: var(--ink); }
+.w-grid { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.w-box { height: 48px; border: 1px solid var(--line-strong); border-radius: 6px; padding: 10px; }
+.w-box.on { border: 2px solid var(--accent); background: var(--accent-soft); padding: 9px; }
+.w-box.on .bar { background: var(--accent); }
+.w-rel { position: relative; }
+.w-radio { display: flex; align-items: center; gap: 8px; }
+.w-dot { width: 12px; height: 12px; border-radius: 6px; border: 1px solid var(--line-strong); }
+.w-dot.on { border: 4px solid var(--ink); }
+.w-img { height: 76px; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
+.w-img line { stroke: var(--wire-bar); }
+.w-btn { height: 40px; border-radius: 6px; background: var(--ink); color: var(--paper); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.marker { position: absolute; left: -34px; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 15px; background: var(--marker); color: var(--on-marker); font-size: 13px; font-weight: 700; cursor: pointer; }
+.marker[aria-pressed="true"], .desc-item[aria-pressed="true"] .num { background: var(--accent); color: var(--on-accent); }
+.sheet-desc { flex: 1 1 260px; border-left: 1px solid var(--line); padding: 20px 14px 24px; display: flex; flex-direction: column; gap: 4px; }
+.sheet-desc > span { padding: 0 10px 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.desc-item { display: flex; gap: 12px; padding: 10px; border: 0; border-radius: 6px; background: transparent; text-align: left; cursor: pointer; }
+.desc-item[aria-pressed="true"] { background: var(--accent-soft); }
+.desc-item .num { flex-shrink: 0; width: 22px; height: 22px; border-radius: 11px; background: var(--marker); color: var(--on-marker); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.desc-item b { display: block; font-size: 14px; font-weight: 600; }
+.desc-item small { display: block; margin-top: 4px; font-size: 13px; line-height: 1.55; color: var(--muted); }
+
+/* stages */
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 48px 40px; }
+.stage { position: relative; border-top: 2px solid var(--ink); padding-top: 28px; display: flex; flex-direction: column; gap: 12px; }
+.stage::before { content: ''; position: absolute; left: 0; top: -12px; width: 22px; height: 22px; border-radius: 11px; border: 2px solid var(--ink); background: var(--surface); }
+.stage h3 { font-size: 24px; font-weight: 700; }
+.stage ul { list-style: none; margin: 6px 0 0; padding: 0; border-bottom: 1px solid var(--line); }
+.stage li { padding: 12px 0; border-top: 1px solid var(--line); }
+.stage .from { margin-top: 6px; font-size: 20px; font-weight: 700; }
+.callout { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px 40px; margin-top: 56px; padding: 28px 32px; border-radius: 8px; background: var(--accent-soft); }
+.callout p { flex: 1 1 420px; font-size: 18px; line-height: 1.6; }
+
+/* process */
+.process { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 32px 24px; }
+.process li { border-top: 1px solid var(--dark-line); padding-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+.process .n { font-size: 15px; font-weight: 700; color: var(--dark-accent); }
+.process b { font-size: 19px; font-weight: 600; color: var(--dark-text); }
+.process span:last-child { font-size: 15px; line-height: 1.65; color: var(--dark-muted); }
+
+/* work */
+.thumbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px 28px; }
+.thumb { display: flex; flex-direction: column; gap: 14px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; color: var(--ink); }
+.thumb-img { display: block; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; transition: border-color 120ms ease; }
+.thumb:hover .thumb-img { border-color: var(--ink); }
+.thumb-img svg { display: block; width: 100%; height: 100%; }
+.thumb b { font-size: 19px; font-weight: 600; }
+.thumb small { font-size: 15px; line-height: 1.6; color: var(--muted); }
+.s-surface { fill: var(--surface); } .s-wire { fill: var(--wire); } .s-bar { fill: var(--wire-bar); } .s-ink { fill: var(--ink); }
+.s-acc { fill: var(--accent); } .s-soft { fill: var(--accent-soft); } .s-mark { fill: var(--marker); }
+.k-line { stroke: var(--line-strong); fill: none; } .k-ink { stroke: var(--ink); fill: none; } .k-acc { stroke: var(--accent); fill: none; }
+dialog { width: min(920px, calc(100% - 32px)); max-height: calc(100% - 48px); padding: 0; border: 0; border-radius: 12px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+dialog::backdrop { background: rgba(12, 16, 21, 0.55); }
+.dlg { display: flex; flex-wrap: wrap; }
+.dlg-img { flex: 1 1 380px; background: var(--wire); padding: 28px; display: flex; align-items: center; }
+.dlg-img .thumb-img { border-color: var(--line-strong); }
+.dlg-body { flex: 1 1 320px; padding: 32px; display: flex; flex-direction: column; gap: 16px; position: relative; }
+.dlg-body ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.dlg-close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; border: 0; border-radius: 22px; background: transparent; cursor: pointer; }
+.dlg-close:hover { background: var(--wire); }
+.dlg-close path { stroke: var(--ink); }
+
+/* principles, faq */
+.split { display: flex; flex-wrap: wrap; gap: 64px 80px; }
+.rules { flex: 1 1 520px; }
+.rules > div { padding: 28px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.rules > div:last-child { border-bottom: 1px solid var(--line); }
+.rules h3 { font-size: 21px; font-weight: 600; }
+.rules p { font-size: 17px; line-height: 1.75; color: var(--muted); }
+.about { flex: 1 1 340px; max-width: 460px; display: flex; flex-direction: column; gap: 20px; }
+.monogram { aspect-ratio: 4 / 3; border-radius: 8px; background: var(--ink); color: var(--paper); display: flex; align-items: flex-end; padding: 28px; font-size: clamp(40px, 5vw, 64px); font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+.faq { flex: 1 1 520px; border-bottom: 1px solid var(--line); }
+.faq details { border-top: 1px solid var(--line); }
+.faq summary { list-style: none; min-height: 76px; padding: 20px 0; display: flex; align-items: center; justify-content: space-between; gap: 24px; font-size: 19px; font-weight: 600; cursor: pointer; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary svg { flex-shrink: 0; transition: transform 150ms ease; }
+.faq summary path { stroke: var(--ink); }
+.faq details[open] summary svg { transform: rotate(45deg); }
+.faq details p { padding: 0 48px 28px 0; font-size: 17px; line-height: 1.75; color: var(--muted); }
+.band { background: var(--accent); color: var(--on-accent); }
+.band .wrap { padding-top: clamp(64px, 8vw, 96px); padding-bottom: clamp(64px, 8vw, 96px); display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+.band h2 { max-width: 760px; }
+.band p { font-size: 19px; line-height: 1.7; opacity: 0.9; }
+
+/* services */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.tab { display: inline-flex; align-items: center; min-height: 50px; padding: 0 24px; border-radius: 25px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: 17px; font-weight: 600; text-decoration: none; }
+.tab:hover { border-color: var(--accent); }
+.tab[aria-current="page"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.rows { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 0 clamp(20px, 3vw, 40px); margin-top: 24px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 24px 0; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+.row-main { flex: 1 1 320px; display: flex; flex-direction: column; gap: 6px; }
+.row-main b { font-size: 18px; font-weight: 600; }
+.row-main span { font-size: 15px; line-height: 1.6; color: var(--muted); }
+.row-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; }
+.kv { display: flex; flex-direction: column; gap: 2px; }
+.kv small { font-size: 13px; color: var(--muted); }
+.kv span { font-size: 16px; }
+.kv strong { font-size: 18px; }
+.est { margin-top: clamp(48px, 6vw, 72px); background: var(--surface); border: 2px solid var(--ink); border-radius: 10px; padding: clamp(24px, 3vw, 40px); display: flex; flex-wrap: wrap; gap: 32px 56px; }
+.est-form { flex: 1 1 420px; display: flex; flex-direction: column; gap: 24px; }
+.est-out { flex: 1 1 300px; padding: 32px; border-radius: 8px; background: var(--paper); display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.est-out .amount { font-size: clamp(36px, 4vw, 48px); line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px 56px; }
+.facts h2 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+.facts p { font-size: 16px; line-height: 1.75; color: var(--muted); }
+
+/* quote */
+.q-layout { padding: clamp(40px, 5vw, 64px) 0 clamp(64px, 8vw, 96px); display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px 72px; }
+.q-side { flex: 0 1 300px; min-width: 260px; display: flex; flex-direction: column; gap: 32px; }
+.q-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.q-steps li { display: flex; align-items: center; gap: 14px; font-size: 17px; color: var(--muted); }
+.q-steps .c { width: 32px; height: 32px; border-radius: 16px; background: var(--wire); color: var(--muted); font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.q-steps li.done { color: var(--ink); }
+.q-steps li.done .c { background: var(--ink); color: var(--paper); }
+.q-steps li.cur { color: var(--ink); font-weight: 700; }
+.q-steps li.cur .c { background: var(--accent); color: var(--on-accent); }
+.q-main { flex: 1 1 580px; min-width: 0; display: flex; flex-direction: column; gap: 32px; }
+.q-main h2 { font-size: 28px; font-weight: 700; }
+.svc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.svc { min-height: 96px; padding: 16px; border-radius: 8px; border: 2px solid var(--line); background: var(--surface); text-align: left; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+.svc:hover { border-color: var(--accent); }
+.svc[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.svc small { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+.svc b { font-size: 17px; font-weight: 600; }
+.svc .tick { visibility: hidden; }
+.svc .tick path { stroke: var(--accent); }
+.svc[aria-pressed="true"] .tick { visibility: visible; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px 24px; }
+.q-nav { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; border-top: 1px solid var(--line); }
+.q-nav > div { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.summary { margin: 0; border-top: 1px solid var(--line); }
+.summary div { display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.summary dt { width: 130px; font-size: 15px; color: var(--muted); }
+.summary dd { margin: 0; flex: 1 1 240px; font-size: 16px; }
+
+/* projects and admin */
+.two { padding: clamp(32px, 4vw, 48px) 0 clamp(64px, 8vw, 96px); display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 32px 48px; align-items: start; }
+.two-wide { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); }
+@media (max-width: 900px) { .two, .two-wide { grid-template-columns: minmax(0, 1fr); } }
+.side-stack, .main-stack { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.plist { display: flex; flex-direction: column; gap: 10px; }
+.pitem { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); text-decoration: none; }
+.pitem:hover { border-color: var(--accent); }
+.pitem[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.pitem b { font-size: 16px; font-weight: 600; }
+.pitem span { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 14px; color: var(--muted); }
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { position: relative; display: grid; grid-template-columns: 28px 1fr; column-gap: 16px; min-height: 72px; }
+.tl li:not(:last-child)::before { content: ''; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: var(--line); }
+.tl li.done:not(:last-child)::before { background: var(--ink); }
+.tl .d { width: 28px; height: 28px; border-radius: 14px; border: 2px solid var(--line-strong); background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+.tl li.done .d { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.tl li.cur .d { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
+.tl .t { padding: 3px 0 18px; display: flex; flex-direction: column; gap: 2px; }
+.tl .t b { font-size: 16px; font-weight: 500; }
+.tl li.cur .t b { font-weight: 700; }
+.tl .t span { font-size: 14px; color: var(--muted); }
+.tl li.cur .t span { color: var(--accent-ink); }
+.doc-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding: 16px 0; border-top: 1px solid var(--line); }
+.doc-row > div { flex: 1 1 240px; display: flex; flex-direction: column; gap: 2px; }
+.doc-row b { font-size: 16px; font-weight: 600; }
+.doc-row span { font-size: 14px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 8px; }
+.stat { padding: 20px 22px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; }
+.stat small { font-size: 14px; color: var(--muted); }
+.stat strong { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+.empty { padding: clamp(40px, 6vw, 72px) clamp(24px, 4vw, 48px); text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.empty h2 { font-size: 26px; font-weight: 700; }
+.legal { max-width: 760px; padding: clamp(48px, 6vw, 80px) 0; display: flex; flex-direction: column; gap: 28px; }
+.legal h2 { font-size: 21px; font-weight: 700; }
+.legal p, .legal li { font-size: 16px; line-height: 1.8; color: var(--muted); }
+.legal ul { margin: 8px 0 0; padding-left: 20px; }
+
+/* footer, toast */
+.site-footer { border-top: 1px solid var(--line); }
+.site-footer .wrap { padding-top: 44px; padding-bottom: 52px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 24px 40px; }
+.site-footer .biz { display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.site-footer .biz b { font-size: 17px; color: var(--ink); }
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.site-footer nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); font-size: 14px; text-decoration: none; }
+.site-footer nav a:hover { text-decoration: underline; }
+.toast { position: fixed; left: 50%; bottom: 28px; z-index: 50; transform: translate(-50%, 16px); max-width: calc(100% - 40px); padding: 14px 22px; border-radius: 8px; background: var(--ink); color: var(--paper); font-size: 15px; font-weight: 500; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .toast, .faq summary svg, .btn, .thumb-img { transition: none; } }
+</style>
+</head>
+<body>
+<a class="sr-only" href="#app">본문으로 건너뛰기</a>
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="#/" aria-label="서비스설계소 홈">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect class="mark-line" x="2" y="2" width="24" height="24" rx="3" stroke-width="2"></rect><path class="mark-line" d="M2 10H26M10 10V26" stroke-width="2"></path><circle class="mark-dot" cx="18.5" cy="18" r="3"></circle></svg>
+      <span>서비스설계소</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="주요 메뉴">
+      <a href="#/services" data-nav="services">서비스와 가격</a>
+      <a href="#/work" data-nav="work">산출물 예시</a>
+      <a href="#/process" data-nav="process">진행 방식</a>
+      <a href="#/projects" data-nav="projects">내 프로젝트</a>
+      <a href="#/admin" data-nav="admin" id="adminLink" hidden>관리자</a>
+      <a class="btn btn-p btn-sm" href="#/quote" data-nav="quote">견적 문의하기</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav" aria-label="메뉴 열기">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5H17M3 10H17M3 15H17" stroke-width="2"></path></svg>
+    </button>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="biz" id="bizInfo"></div>
+    <nav aria-label="하단 메뉴">
+      <a href="#/services">서비스와 가격</a>
+      <a href="#/quote">견적 문의</a>
+      <a href="#/terms">이용약관</a>
+      <a href="#/privacy"><b>개인정보처리방침</b></a>
+    </nav>
+  </div>
+</footer>
+
+<dialog id="workDialog" aria-labelledby="dlgTitle"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 사이트 기본 정보: 실제 정보로 바꿔 쓰세요 ---------- */
+  var SITE = {
+    brand: '서비스설계소',
+    ceo: '[대표자명]',
+    company: '[상호명]',
+    bizNo: '[사업자등록번호]',
+    salesNo: '[통신판매업 신고번호]',
+    email: '[contact@도메인]',
+    address: '[사업장 주소]'
+  };
+
+  /* ---------- 콘텐츠 데이터 ---------- */
+  var SERVICES = [
+    { id: 'consult', label: '상담과 컨설팅', stage: '기획 전' },
+    { id: 'plan', label: '기획서와 정책서', stage: '기획 전' },
+    { id: 'proposal', label: '제안서와 보고서', stage: '기획 전' },
+    { id: 'wireframe', label: '화면설계서', stage: '기획 후' },
+    { id: 'prototype', label: '프로토타입', stage: '기획 후' },
+    { id: 'design', label: 'UI 디자인', stage: '디자인과 개발' },
+    { id: 'dev', label: '웹과 앱 개발, 배포', stage: '디자인과 개발' },
+    { id: 'maint', label: '유지보수와 수정', stage: '유지보수' }
+  ];
+
+  var STAGES = [
+    { slug: 'before', title: '기획 전', lead: '무엇을 만들지 정리가 필요할 때', from: '컨설팅 30만 원부터',
+      outputs: ['상담과 컨설팅', '서비스 기획서', '정책서', '제안서와 보고서'],
+      desc: '무엇을 만들지, 어떻게 돈을 벌지 정리가 필요할 때 맡기는 상품입니다.',
+      items: [
+        { name: '서비스 진단 컨설팅', detail: '화상 상담 60분과 요약 리포트 3~5쪽', period: '3일', revision: '없음', price: '30만 원', svc: 'consult' },
+        { name: '심층 컨설팅', detail: '상담 3회, 비즈니스 모델과 경쟁 서비스 분석 리포트', period: '2주', revision: '1회', price: '150만 원', svc: 'consult' },
+        { name: '서비스 기획서', detail: '서비스 컨셉, 비즈니스 모델, 타깃, 핵심 기능, 정보 구조(IA)', period: '2~3주', revision: '2회', price: '200만 원부터', svc: 'plan' },
+        { name: '정책서', detail: '회원, 결제, 정산 등 도메인별 운영 정책', period: '1~2주', revision: '2회', price: '도메인당 80만 원부터', svc: 'plan' },
+        { name: '제안서와 보고서', detail: 'RFP 대응 제안서, 시장조사와 벤치마킹 보고서', period: '2~4주', revision: '2회', price: '200만 원부터', svc: 'proposal' }
+      ] },
+    { slug: 'after', title: '기획 후', lead: '만들 것을 개발자가 이해하는 문서로', from: '화면설계서 200만 원부터',
+      outputs: ['화면설계서', '요구사항정의서', '클릭해 볼 수 있는 프로토타입'],
+      desc: '만들 서비스를 디자이너와 개발자가 바로 작업할 수 있는 문서로 옮기는 상품입니다.',
+      items: [
+        { name: '화면설계서 Lite', detail: '40쪽 이내, 요구사항정의서 포함', period: '3주', revision: '2회', price: '200만 원', svc: 'wireframe' },
+        { name: '화면설계서 Standard', detail: '100쪽 이내, 정책서 요약 포함', period: '4주', revision: '3회', price: '400만 원', svc: 'wireframe' },
+        { name: '화면설계서 Premium', detail: '200쪽 이내, 사용자와 관리자 화면, 정책서 포함', period: '6주', revision: '3회', price: '700만 원부터', svc: 'wireframe' },
+        { name: '클릭형 프로토타입', detail: 'Figma로 화면을 연결해 실제처럼 눌러볼 수 있게 제작', period: '1~2주', revision: '2회', price: '화면당 6만~10만 원', svc: 'prototype' }
+      ] },
+    { slug: 'build', title: '디자인과 개발', lead: '설계서대로 만들고 배포까지', from: '웹 MVP 1,500만 원부터',
+      outputs: ['UI 디자인', '웹과 앱 개발', '서버 구축과 배포'],
+      desc: '설계서를 바탕으로 디자인하고 개발해 실제 서비스로 배포하는 상품입니다.',
+      items: [
+        { name: 'UI 디자인', detail: '디자인 컨셉과 디자인 시스템, 20화면 기준', period: '3~4주', revision: '3회', price: '350만 원부터', svc: 'design' },
+        { name: '웹 MVP', detail: '핵심 기능 중심의 반응형 웹, 서버 구축과 배포 포함', period: '2~3개월', revision: '견적서 기준', price: '1,500만 원부터', svc: 'dev' },
+        { name: '앱 MVP', detail: 'iOS와 안드로이드 동시 개발, 스토어 등록 포함', period: '3~4개월', revision: '견적서 기준', price: '2,500만 원부터', svc: 'dev' },
+        { name: '플랫폼 구축', detail: '매칭, 커머스 등 관리자 기능을 포함한 서비스', period: '4개월 이상', revision: '견적서 기준', price: '4,000만 원부터', svc: 'dev' }
+      ] },
+    { slug: 'care', title: '유지보수', lead: '운영하면서 생기는 수정과 개선', from: '건당 10만 원부터',
+      outputs: ['건별 수정', '월정액 유지보수', '기능 개선'],
+      desc: '운영 중인 서비스를 고치고 개선하는 상품입니다. 다른 곳에서 만든 서비스도 검토 후 맡습니다.',
+      items: [
+        { name: '건별 단순 수정', detail: '문구, 이미지, 배너 교체', period: '영업일 2일', revision: '없음', price: '건당 10만 원부터', svc: 'maint' },
+        { name: '건별 기능 수정', detail: '작업 시간을 산정해 견적 후 진행', period: '견적서 기준', revision: '없음', price: '시간당 8만 원', svc: 'maint' },
+        { name: '월정액 Basic', detail: '월 5시간, 영업일 2일 안에 대응', period: '월 단위', revision: '시간 내 무제한', price: '월 40만 원', svc: 'maint' },
+        { name: '월정액 Standard', detail: '월 12시간, 서버 모니터링 포함', period: '월 단위', revision: '시간 내 무제한', price: '월 90만 원', svc: 'maint' },
+        { name: '월정액 Pro', detail: '월 25시간, 장애 당일 대응, 월간 개선 제안', period: '월 단위', revision: '시간 내 무제한', price: '월 180만 원', svc: 'maint' }
+      ] }
+  ];
+
+  var FAQ = [
+    { q: '아이디어만 있는데 의뢰할 수 있나요?', a: '네. 무료 상담에서 지금 필요한 단계부터 정리해 드립니다. 대부분 진단 컨설팅이나 서비스 기획서로 시작합니다.' },
+    { q: '산출물은 어떤 형식으로 받나요?', a: 'PPT, Figma, Word나 한글, PDF, 노션 중 원하는 형식으로 드립니다. 편집할 수 있는 원본 파일도 함께 드립니다.' },
+    { q: '수정은 몇 번까지 할 수 있나요?', a: '견적서에 적힌 횟수만큼 무료로 수정합니다. 기능이 추가되는 변경은 따로 견적을 드립니다.' },
+    { q: '대금은 어떻게 나눠서 내나요?', a: '300만 원 이하 문서 작업은 착수 때 50%, 납품 때 50%를 냅니다. 개발은 착수 30%, 디자인 확정 40%, 완료 30%로 나눕니다.' },
+    { q: '다른 곳에서 만든 서비스도 유지보수해 주나요?', a: '네. 소스 코드와 서버 접근 권한을 받아 먼저 상태를 점검한 뒤, 맡을 수 있는 범위와 월 비용을 안내드립니다.' }
+  ];
+
+  var WORK = [
+    { key: 'plan', title: '서비스 기획서', short: '무엇을, 누구에게, 어떻게 팔지 한 문서로', desc: '서비스의 방향을 한 문서로 정리합니다. 투자 검토나 개발사 견적 요청에도 그대로 쓸 수 있게 만듭니다.', includes: ['서비스 컨셉과 해결할 문제', '타깃 사용자와 이용 시나리오', '비즈니스 모델과 수익 구조', '핵심 기능 목록과 우선순위', '정보 구조(IA) 초안'], formats: 'PPT, PDF, 노션', product: '서비스 기획서', svc: 'plan', tab: 'before' },
+    { key: 'policy', title: '정책서', short: '화면에 보이지 않는 규칙을 표로', desc: '개발자가 예외 상황을 임의로 판단하지 않도록, 조건과 처리 방식을 표로 적습니다.', includes: ['회원 가입, 탈퇴, 휴면 기준', '결제, 취소, 환불 규칙', '정산 주기와 수수료 계산', '권한과 상태값 정의'], formats: 'Word나 한글, PDF, 노션', product: '정책서', svc: 'plan', tab: 'before' },
+    { key: 'ia', title: '정보 구조도(IA)', short: '전체 메뉴와 화면 관계를 한눈에', desc: '서비스의 메뉴와 화면 관계를 한 장에 그립니다. 화면설계서의 목차 역할을 합니다.', includes: ['메뉴 구조와 화면 목록', '사용자와 관리자 화면 구분', '화면 ID 체계'], formats: 'PPT, Figma, PDF', product: '화면설계서 Lite', svc: 'wireframe', tab: 'after' },
+    { key: 'wire', title: '화면설계서', short: '화면마다 번호를 달고 동작을 설명', desc: '화면 구성 요소에 번호를 표시하고 오른쪽에 동작과 예외 처리를 적습니다. 디자이너와 개발자가 이 문서만 보고 작업할 수 있게 씁니다.', includes: ['화면별 와이어프레임', '요소별 동작과 예외 처리 설명', '화면 이동 흐름', '버전별 변경 이력'], formats: 'PPT, Figma, PDF', product: '화면설계서 Standard', svc: 'wireframe', tab: 'after' },
+    { key: 'proto', title: '클릭형 프로토타입', short: '설계한 화면을 실제처럼 눌러보기', desc: '설계한 화면을 연결해 휴대폰에서 실제 앱처럼 눌러볼 수 있게 만듭니다. 투자자 시연이나 사용자 테스트에 씁니다.', includes: ['주요 사용 흐름 연결', '휴대폰에서 바로 여는 공유 링크', '테스트용 시나리오 안내'], formats: 'Figma 링크', product: '클릭형 프로토타입', svc: 'prototype', tab: 'after' },
+    { key: 'care', title: '월간 유지보수 리포트', short: '처리한 요청과 다음 달 개선 제안', desc: '한 달 동안 처리한 수정, 서버 상태, 다음 달 개선 제안을 정리해 매월 보내드립니다.', includes: ['처리한 요청과 사용 시간', '장애와 조치 내역', '다음 달 개선 제안'], formats: 'PDF, 노션', product: '월정액 Standard', svc: 'maint', tab: 'care' }
+  ];
+
+  var STEP_LABELS = ['견적 문의', '무료 사전 상담', '견적서 확인', '전자계약과 착수금', '작업과 중간 검수', '납품과 세금계산서'];
+  var STATUS_ORDER = ['received', 'booked', 'quoted', 'accepted', 'contracted', 'delivered', 'closed'];
+  var STATUS = {
+    received: { label: '문의 접수', step: 1, customer: '상담 시간 선택 필요' },
+    booked: { label: '상담 예약', step: 1, customer: '상담 예약 완료' },
+    quoted: { label: '견적서 발송', step: 2, customer: '견적서 확인 필요' },
+    accepted: { label: '견적 수락', step: 3, customer: '계약서 서명 대기' },
+    contracted: { label: '계약 완료', step: 4, customer: '작업 진행 중' },
+    delivered: { label: '납품 완료', step: 5, customer: '잔금 입금 대기' },
+    closed: { label: '정산 완료', step: 6, customer: '완료' }
+  };
+  var SLOTS = ['월요일 오후 2시', '화요일 오전 10시', '수요일 오후 4시', '목요일 오전 11시', '금요일 오후 3시'];
+
+  /* ---------- 상태 ---------- */
+  var state = {
+    specOn: 0,
+    est: { size: 1, admin: false, proto: false, rush: false },
+    form: blankForm(),
+    lastSubmitted: null,
+    slotPick: {},
+    adminFilter: 'all',
+    drafts: {},
+    busy: false
+  };
+  function blankForm() {
+    return { step: 1, services: [], situation: '', projectName: '', desc: '', budget: '', timeline: '', formats: [], gov: false, name: '', company: '', email: '', phone: '', taxInvoice: true, agree: false, error: '', fromProduct: '' };
+  }
+
+  var store = { db: null, user: null, uid: null, isAdmin: false, ready: false, mode: 'pending', demo: false, persisted: false, myDoc: null, adminDocs: [], mem: { customer: null, items: {} } };
+
+  /* ---------- 유틸 ---------- */
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function won(n) { return Number(n).toLocaleString('ko-KR') + '만 원'; }
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    return d.getFullYear() + '. ' + (d.getMonth() + 1) + '. ' + d.getDate() + '.';
+  }
+  function statusIdx(s) { var i = STATUS_ORDER.indexOf(s); return i < 0 ? 0 : i; }
+  function newInquiryId() {
+    var d = new Date();
+    var ymd = String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    return 'SD-' + ymd + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+  }
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 3000);
+  }
+  function go(hash) {
+    if (location.hash === hash) render(true); else location.hash = hash;
+  }
+
+  /* ---------- 산출물 썸네일 ---------- */
+  function svgWrap(inner) {
+    return '<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><rect class="s-surface" x="0" y="0" width="320" height="200"></rect>' + inner + '</svg>';
+  }
+  var THUMBS = {
+    plan: function () {
+      return svgWrap('<rect class="s-ink" x="24" y="22" width="120" height="12" rx="2"></rect><rect class="s-bar" x="24" y="42" width="190" height="6" rx="2"></rect>' +
+        '<rect class="k-line" x="24.5" y="62.5" width="84" height="54" rx="4"></rect><rect class="k-line" x="118.5" y="62.5" width="84" height="54" rx="4"></rect><rect class="s-soft" x="212" y="62" width="85" height="55" rx="4"></rect><rect class="k-acc" x="212.5" y="62.5" width="84" height="54" rx="4"></rect>' +
+        '<rect class="k-line" x="24.5" y="126.5" width="84" height="54" rx="4"></rect><rect class="k-line" x="118.5" y="126.5" width="84" height="54" rx="4"></rect><rect class="k-line" x="212.5" y="126.5" width="84" height="54" rx="4"></rect>' +
+        '<rect class="s-ink" x="34" y="74" width="40" height="6" rx="2"></rect><rect class="s-bar" x="34" y="88" width="60" height="5" rx="2"></rect><rect class="s-bar" x="34" y="98" width="48" height="5" rx="2"></rect>' +
+        '<rect class="s-ink" x="128" y="74" width="46" height="6" rx="2"></rect><rect class="s-bar" x="128" y="88" width="60" height="5" rx="2"></rect><rect class="s-acc" x="222" y="74" width="44" height="6" rx="2"></rect><rect class="s-acc" x="222" y="88" width="58" height="5" rx="2"></rect>' +
+        '<rect class="s-ink" x="34" y="138" width="36" height="6" rx="2"></rect><rect class="s-bar" x="34" y="152" width="56" height="5" rx="2"></rect><rect class="s-ink" x="128" y="138" width="42" height="6" rx="2"></rect><rect class="s-bar" x="128" y="152" width="54" height="5" rx="2"></rect><rect class="s-ink" x="222" y="138" width="38" height="6" rx="2"></rect><rect class="s-bar" x="222" y="152" width="60" height="5" rx="2"></rect>');
+    },
+    policy: function () {
+      var rows = '';
+      for (var i = 0; i < 6; i++) {
+        var y = 62 + i * 21;
+        rows += '<line class="k-line" x1="24" y1="' + y + '" x2="296" y2="' + y + '"></line>' +
+          '<rect class="s-bar" x="32" y="' + (y + 7) + '" width="' + (40 + (i * 7) % 20) + '" height="6" rx="2"></rect>' +
+          '<rect class="' + (i === 2 ? 's-acc' : 's-bar') + '" x="112" y="' + (y + 7) + '" width="' + (90 + (i * 13) % 40) + '" height="6" rx="2"></rect>' +
+          '<rect class="s-bar" x="244" y="' + (y + 7) + '" width="36" height="6" rx="2"></rect>';
+      }
+      return svgWrap('<rect class="s-ink" x="24" y="22" width="96" height="12" rx="2"></rect><rect class="s-wire" x="24" y="44" width="272" height="18"></rect><rect class="s-ink" x="32" y="50" width="34" height="6" rx="2"></rect><rect class="s-ink" x="112" y="50" width="40" height="6" rx="2"></rect><rect class="s-ink" x="244" y="50" width="30" height="6" rx="2"></rect>' + rows + '<rect class="s-soft" x="104" y="104" width="136" height="20" opacity="0.6"></rect>');
+    },
+    ia: function () {
+      return svgWrap('<rect class="s-ink" x="130" y="20" width="60" height="26" rx="4"></rect><path class="k-ink" d="M160 46V62M56 62H264M56 62V74M160 62V74M264 62V74"></path>' +
+        '<rect class="k-ink" x="26.5" y="74.5" width="59" height="24" rx="4"></rect><rect class="s-soft" x="130" y="74" width="60" height="25" rx="4"></rect><rect class="k-acc" x="130.5" y="74.5" width="59" height="24" rx="4"></rect><rect class="k-ink" x="234.5" y="74.5" width="59" height="24" rx="4"></rect>' +
+        '<path class="k-line" d="M40 99V172M40 124H52M40 150H52M40 172H52M146 99V150M146 124H158M146 150H158M250 99V124M250 124H262"></path>' +
+        '<rect class="k-line" x="52.5" y="116.5" width="44" height="16" rx="3"></rect><rect class="k-line" x="52.5" y="142.5" width="44" height="16" rx="3"></rect><rect class="k-line" x="52.5" y="164.5" width="44" height="16" rx="3"></rect>' +
+        '<rect class="k-acc" x="158.5" y="116.5" width="44" height="16" rx="3"></rect><rect class="k-acc" x="158.5" y="142.5" width="44" height="16" rx="3"></rect><rect class="k-line" x="262.5" y="116.5" width="44" height="16" rx="3"></rect>' +
+        '<rect class="s-surface" x="140" y="31" width="40" height="5" rx="2"></rect>');
+    },
+    wire: function () {
+      return svgWrap('<rect class="s-wire" x="0" y="0" width="170" height="200"></rect><rect class="s-surface" x="45" y="16" width="80" height="168" rx="12"></rect><rect class="k-ink" x="45.5" y="16.5" width="79" height="167" rx="12"></rect>' +
+        '<rect class="s-ink" x="55" y="34" width="44" height="6" rx="2"></rect><rect class="s-soft" x="55" y="50" width="28" height="22" rx="3"></rect><rect class="k-acc" x="55.5" y="50.5" width="27" height="21" rx="3"></rect><rect class="k-line" x="87.5" y="50.5" width="27" height="21" rx="3"></rect>' +
+        '<rect class="k-line" x="55.5" y="80.5" width="59" height="40" rx="3"></rect><path class="k-line" d="M56 81L114 120M114 81L56 120"></path><rect class="s-ink" x="55" y="160" width="60" height="14" rx="3"></rect>' +
+        '<circle class="s-mark" cx="40" cy="52" r="8"></circle><circle class="s-mark" cx="40" cy="84" r="8"></circle><circle class="s-mark" cx="40" cy="166" r="8"></circle>' +
+        '<line class="k-line" x1="170" y1="0" x2="170" y2="200"></line>' +
+        '<circle class="s-mark" cx="190" cy="34" r="8"></circle><rect class="s-ink" x="206" y="30" width="54" height="6" rx="2"></rect><rect class="s-bar" x="206" y="42" width="92" height="5" rx="2"></rect><rect class="s-bar" x="206" y="52" width="70" height="5" rx="2"></rect>' +
+        '<circle class="s-mark" cx="190" cy="84" r="8"></circle><rect class="s-ink" x="206" y="80" width="44" height="6" rx="2"></rect><rect class="s-bar" x="206" y="92" width="88" height="5" rx="2"></rect><rect class="s-bar" x="206" y="102" width="60" height="5" rx="2"></rect>' +
+        '<circle class="s-mark" cx="190" cy="134" r="8"></circle><rect class="s-ink" x="206" y="130" width="50" height="6" rx="2"></rect><rect class="s-bar" x="206" y="142" width="84" height="5" rx="2"></rect>');
+    },
+    proto: function () {
+      return svgWrap('<rect class="s-wire" x="0" y="0" width="320" height="200"></rect>' +
+        '<rect class="s-surface" x="38" y="18" width="88" height="164" rx="14"></rect><rect class="k-ink" x="38.5" y="18.5" width="87" height="163" rx="14"></rect><rect class="s-ink" x="50" y="38" width="48" height="7" rx="2"></rect><rect class="s-bar" x="50" y="54" width="64" height="30" rx="3"></rect><rect class="s-bar" x="50" y="90" width="64" height="30" rx="3"></rect><rect class="s-acc" x="50" y="152" width="64" height="16" rx="3"></rect>' +
+        '<path class="k-acc" d="M120 160C170 160 160 70 204 70" stroke-width="2.5"></path><path class="k-acc" d="M196 62L206 70L196 78" stroke-width="2.5"></path>' +
+        '<rect class="s-surface" x="194" y="18" width="88" height="164" rx="14"></rect><rect class="k-ink" x="194.5" y="18.5" width="87" height="163" rx="14"></rect><rect class="s-ink" x="206" y="38" width="40" height="7" rx="2"></rect><circle class="s-soft" cx="238" cy="92" r="26"></circle><path class="k-acc" d="M226 92L235 101L252 83" stroke-width="3"></path><rect class="s-bar" x="210" y="132" width="56" height="6" rx="2"></rect><rect class="s-ink" x="206" y="152" width="64" height="16" rx="3"></rect>');
+    },
+    care: function () {
+      var rows = '';
+      for (var i = 0; i < 4; i++) {
+        var y = 64 + i * 26;
+        rows += '<circle class="s-soft" cx="36" cy="' + (y + 6) + '" r="8"></circle><path class="k-acc" d="M32 ' + (y + 6) + 'L35 ' + (y + 9) + 'L41 ' + (y + 2) + '" stroke-width="2"></path><rect class="s-bar" x="52" y="' + (y + 3) + '" width="' + (80 + (i * 17) % 40) + '" height="6" rx="2"></rect><rect class="s-bar" x="150" y="' + (y + 3) + '" width="18" height="6" rx="2"></rect>';
+      }
+      return svgWrap('<rect class="s-ink" x="24" y="22" width="110" height="12" rx="2"></rect><rect class="s-bar" x="24" y="42" width="70" height="6" rx="2"></rect>' + rows +
+        '<line class="k-line" x1="190" y1="60" x2="190" y2="170"></line><rect class="k-line" x="208.5" y="62.5" width="88" height="108" rx="4"></rect>' +
+        '<rect class="s-bar" x="222" y="130" width="12" height="30"></rect><rect class="s-bar" x="240" y="112" width="12" height="48"></rect><rect class="s-acc" x="258" y="96" width="12" height="64"></rect><rect class="s-bar" x="276" y="120" width="12" height="40"></rect><rect class="s-ink" x="220" y="74" width="40" height="6" rx="2"></rect>');
+    }
+  };
+
+  /* ---------- 데이터 접근 ---------- */
+  function myData() {
+    if (store.mode === 'db') return store.myDoc || { items: {} };
+    return store.mem;
+  }
+  function myItems() {
+    var items = (myData().items) || {};
+    return Object.keys(items).map(function (k) { return items[k]; }).sort(function (a, b) { return String(b.createdAt).localeCompare(String(a.createdAt)); });
+  }
+  function adminRows() {
+    var out = [];
+    var docs = store.mode === 'db' ? store.adminDocs : [{ uid: 'local', data: store.mem }];
+    docs.forEach(function (d) {
+      var items = (d.data && d.data.items) || {};
+      Object.keys(items).forEach(function (k) { out.push({ uid: d.uid, item: items[k], customer: (d.data && d.data.customer) || {} }); });
+    });
+    return out.sort(function (a, b) { return String(b.item.createdAt).localeCompare(String(a.item.createdAt)); });
+  }
+  function writeItem(uid, id, patch, customer) {
+    var now = new Date().toISOString();
+    var body = {};
+    body[id] = Object.assign({}, patch, { updatedAt: now });
+    if (store.mode === 'db') {
+      var ref = store.db.doc('inquiries/' + uid);
+      var payload = { items: body, updatedAt: now };
+      if (customer) payload.customer = customer;
+      var exists = uid === store.uid ? !!store.myDoc : true;
+      return exists ? ref.update(payload) : ref.set(payload);
+    }
+    var cur = store.mem.items[id] || {};
+    store.mem.items[id] = Object.assign({}, cur, body[id]);
+    if (customer) store.mem.customer = customer;
+    saveLocal();
+    return Promise.resolve();
+  }
+
+  /* ---------- 화면: 홈 ---------- */
+  function viewHome() {
+    var spec = [
+      { t: '서비스 선택', d: '여러 개 선택할 수 있습니다. 선택한 단계에 맞춰 다음 질문이 바뀝니다.' },
+      { t: '현재 상황', d: '아이디어만 있음, 기획 문서 있음 등에서 하나를 고릅니다.' },
+      { t: '참고 자료', d: '파일 첨부나 링크 입력은 선택 사항입니다.' },
+      { t: '다음 버튼', d: '서비스를 하나도 고르지 않으면 안내 문구를 보여줍니다.' }
+    ];
+    function mk(n, top) {
+      return '<button type="button" class="marker" id="mk' + n + '" data-act="spec" data-n="' + n + '" aria-pressed="' + (state.specOn === n) + '" aria-label="' + n + '번 설명 보기" style="top:' + top + 'px">' + n + '</button>';
+    }
+    var descs = spec.map(function (s, i) {
+      var n = i + 1;
+      return '<button type="button" class="desc-item" id="ds' + n + '" data-act="spec" data-n="' + n + '" aria-pressed="' + (state.specOn === n) + '"><span class="num">' + n + '</span><span><b>' + s.t + '</b><small>' + s.d + '</small></span></button>';
+    }).join('');
+
+    var stages = STAGES.map(function (s) {
+      return '<div class="stage"><h3>' + s.title + '</h3><p class="muted">' + s.lead + '</p><ul>' + s.outputs.map(function (o) { return '<li>' + o + '</li>'; }).join('') + '</ul><span class="from">' + s.from + '</span><a class="linkbtn" href="#/services/' + s.slug + '">' + s.title + ' 상품 보기</a></div>';
+    }).join('');
+
+    var preview = WORK.slice(1, 4).map(function (w) {
+      return '<button type="button" class="thumb" data-act="openWork" data-key="' + w.key + '"><span class="thumb-img">' + THUMBS[w.key]() + '</span><b>' + w.title + '</b><small>' + w.short + '</small></button>';
+    }).join('');
+
+    return '' +
+    '<div class="wrap"><section class="hero">' +
+      '<div class="hero-copy">' +
+        '<h1 class="h-display" tabindex="-1">아이디어를 개발할 수 있는 문서로, 문서를 운영되는 서비스로</h1>' +
+        '<p class="lead">15년차 서비스·플랫폼 기획자가 기획서와 화면설계서를 쓰고, 크루와 함께 디자인, 개발, 배포, 유지보수까지 맡습니다. 필요한 단계만 골라 맡길 수도 있습니다.</p>' +
+        '<div class="actions"><a class="btn btn-p btn-lg" href="#/quote">견적 문의하기</a><a class="btn btn-s btn-lg" href="#/services">서비스와 가격 보기</a></div>' +
+        '<p class="fine">무료 사전 상담 후 견적서를 드립니다. 전자계약과 세금계산서 발행까지 온라인으로 진행합니다.</p>' +
+      '</div>' +
+      '<figure class="sheet" style="margin:0" aria-label="화면설계서 예시: 견적 문의 1단계">' +
+        '<div class="sheet-meta"><div><span>화면 ID</span><span>QT_01</span></div><div><span>화면명</span><span>견적 문의 1단계</span></div><div><span>버전</span><span>v0.3</span></div></div>' +
+        '<div class="sheet-body">' +
+          '<div class="sheet-wire"><div class="phone">' +
+            '<div style="display:flex;align-items:center;gap:8px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path class="k-ink" d="M8 2L4 6L8 10" stroke-width="1.5"></path></svg><div class="bar" style="width:72px"></div></div>' +
+            '<div style="display:flex;flex-direction:column;gap:6px"><div class="bar-ink" style="width:150px"></div><div class="bar" style="width:110px"></div></div>' +
+            '<div class="w-grid"><div class="w-box on"><div class="bar" style="width:44px;height:7px"></div></div><div class="w-box"><div class="bar" style="width:52px;height:7px"></div></div><div class="w-box"><div class="bar" style="width:38px;height:7px"></div></div><div class="w-box on"><div class="bar" style="width:48px;height:7px"></div></div>' + mk(1, -14) + '</div>' +
+            '<div class="w-rel" style="display:flex;flex-direction:column;gap:8px"><div class="w-radio"><div class="w-dot on"></div><div class="bar" style="width:90px;height:7px"></div></div><div class="w-radio"><div class="w-dot"></div><div class="bar" style="width:74px;height:7px"></div></div>' + mk(2, -8) + '</div>' +
+            '<div class="w-rel"><div class="w-img"><svg width="100%" height="100%" viewBox="0 0 200 76" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="0" x2="200" y2="76"></line><line x1="200" y1="0" x2="0" y2="76"></line></svg></div>' + mk(3, -8) + '</div>' +
+            '<div class="w-rel" style="margin-top:auto"><div class="w-btn">다음</div>' + mk(4, 5) + '</div>' +
+          '</div></div>' +
+          '<div class="sheet-desc"><span>Description</span>' + descs + '</div>' +
+        '</div>' +
+      '</figure>' +
+    '</section></div>' +
+
+    '<section class="sec sec-white"><div class="wrap">' +
+      '<div class="sec-head"><h2 class="h-sec">필요한 단계부터 맡기세요</h2><p>서비스가 만들어지는 네 단계를 한 팀이 맡습니다. 한 단계만 맡겨도 되고, 처음부터 끝까지 맡겨도 됩니다.</p></div>' +
+      '<div class="stages">' + stages + '</div>' +
+      '<div class="callout"><p>기획을 맡긴 뒤 개발까지 이어가면 기획비의 20%를 개발비에서 빼드립니다. 표시된 가격은 부가세 별도 시작 가격입니다.</p><a class="btn btn-o" href="#/services/after">예상 금액 계산해 보기</a></div>' +
+    '</div></section>' +
+
+    '<section class="sec"><div class="wrap">' +
+      '<div class="sec-head"><h2 class="h-sec">받게 되는 문서는 이런 모습입니다</h2><p>산출물마다 무엇이 들어가는지 미리 보고 고를 수 있습니다. 눌러서 자세히 보세요.</p></div>' +
+      '<div class="thumbs">' + preview + '</div>' +
+      '<p style="margin-top:32px"><a class="linkbtn" href="#/work">산출물 예시 전체 보기</a></p>' +
+    '</div></section>' +
+
+    '<section class="sec sec-dark" id="process"><div class="wrap">' +
+      '<div class="sec-head"><h2 class="h-sec" style="color:var(--dark-text)">의뢰부터 세금계산서까지</h2><p>모든 단계를 온라인으로 진행합니다. 계약서는 전자서명으로, 세금계산서는 전자세금계산서로 발행합니다.</p></div>' +
+      '<ol class="process">' +
+        '<li><span class="n">1</span><b>견적 문의</b><span>필요한 서비스와 지금 상황을 세 단계로 남깁니다.</span></li>' +
+        '<li><span class="n">2</span><b>무료 사전 상담</b><span>내 프로젝트에서 시간을 골라 20~30분 화상 상담을 합니다.</span></li>' +
+        '<li><span class="n">3</span><b>견적서 확인</b><span>산출물, 수정 횟수, 일정, 금액을 적은 견적서를 받습니다.</span></li>' +
+        '<li><span class="n">4</span><b>전자계약과 착수금</b><span>온라인으로 서명하고 착수금을 입금하면 작업을 시작합니다.</span></li>' +
+        '<li><span class="n">5</span><b>작업과 중간 검수</b><span>중간 산출물을 보고 승인하거나 수정을 요청합니다.</span></li>' +
+        '<li><span class="n">6</span><b>납품과 세금계산서</b><span>최종본을 받고 잔금을 입금하면 세금계산서가 발행됩니다.</span></li>' +
+      '</ol>' +
+    '</div></section>' +
+
+    '<section class="sec"><div class="wrap split">' +
+      '<div class="rules"><h2 class="h-sec" style="margin-bottom:32px">이렇게 일합니다</h2>' +
+        '<div><h3>수정과 변경을 나눠서 견적서에 적습니다</h3><p>계약 범위 안의 수정은 정해진 횟수만큼 무료이고, 기능이 추가되는 변경은 따로 견적을 드립니다. 작업이 끝난 뒤 금액이 달라지지 않습니다.</p></div>' +
+        '<div><h3>기획한 사람이 끝까지 봅니다</h3><p>디자인과 개발이 설계서대로 진행되는지 기획자가 직접 검수합니다. 문서를 넘기고 끝나는 기획이 아닙니다.</p></div>' +
+        '<div><h3>사업자로 계약하고 세금계산서를 발행합니다</h3><p>모든 프로젝트는 전자계약으로 진행합니다. 정부지원사업 예산으로 진행한다면 필요한 서류 요건을 상담 때 함께 확인합니다.</p></div>' +
+      '</div>' +
+      '<div class="about">' +
+        '<div class="monogram" aria-hidden="true">기획 15년</div>' +
+        '<div><p style="font-size:24px;font-weight:700">' + esc(SITE.ceo) + '</p><p class="muted" style="font-size:17px">대표, 서비스·플랫폼 기획자</p></div>' +
+        '<p style="font-size:16px;line-height:1.75">15년 동안 서비스와 플랫폼을 기획하며 기획서, 정책서, 화면설계서를 쓰고 개발과 운영까지 함께했습니다. 프로젝트에 맞춰 UI 디자이너, 프론트엔드와 백엔드 개발자, QA 크루가 함께합니다.</p>' +
+      '</div>' +
+    '</div></section>' +
+
+    '<section class="sec sec-white"><div class="wrap split">' +
+      '<h2 class="h-sec" style="flex:0 1 360px">자주 묻는 질문</h2>' +
+      '<div class="faq">' + FAQ.map(function (f, i) {
+        return '<details' + (i === 0 ? ' open' : '') + '><summary>' + f.q + '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10H16M10 4V16" stroke-width="2"></path></svg></summary><p>' + f.a + '</p></details>';
+      }).join('') + '</div>' +
+    '</div></section>' +
+
+    '<section class="band"><div class="wrap">' +
+      '<h2 class="h-sec">만들고 싶은 서비스가 있다면 견적부터 받아보세요</h2>' +
+      '<p>세 단계 질문에 답하면 영업일 하루 안에 확인하고, 상담 시간을 바로 고를 수 있습니다.</p>' +
+      '<a class="btn btn-w btn-lg" href="#/quote" style="margin-top:8px">견적 문의하기</a>' +
+    '</div></section>';
+  }
+
+  /* ---------- 화면: 서비스와 가격 ---------- */
+  function viewServices(slug) {
+    var tab = STAGES.filter(function (s) { return s.slug === slug; })[0] || STAGES[0];
+    var tabs = STAGES.map(function (s) {
+      return '<a class="tab" href="#/services/' + s.slug + '"' + (s === tab ? ' aria-current="page"' : '') + '>' + s.title + '</a>';
+    }).join('');
+    var rows = tab.items.map(function (r, i) {
+      return '<div class="row"><div class="row-main"><b>' + r.name + '</b><span>' + r.detail + '</span></div><div class="row-meta">' +
+        '<div class="kv" style="width:110px"><small>기간</small><span>' + r.period + '</span></div>' +
+        '<div class="kv" style="width:110px"><small>수정</small><span>' + r.revision + '</span></div>' +
+        '<div class="kv" style="width:170px"><small>가격</small><strong>' + r.price + '</strong></div>' +
+        '<button type="button" class="btn btn-o btn-sm" data-act="askProduct" data-svc="' + r.svc + '" data-name="' + esc(r.name) + '">이 상품으로 문의</button>' +
+        '</div></div>';
+    }).join('');
+
+    var e = state.est;
+    var sizes = ['40쪽 이내', '100쪽 이내', '200쪽 이내'];
+    var calc = estimate();
+
+    return '<div class="wrap">' +
+      '<section class="page-head"><h1 class="h-page" tabindex="-1">서비스와 가격</h1><p>단계를 고르면 상품별 구성과 시작 가격을 볼 수 있습니다. 정확한 금액은 무료 상담 후 견적서로 드립니다.</p></section>' +
+      '<nav class="tabs" aria-label="서비스 단계">' + tabs + '</nav>' +
+      '<p style="font-size:18px">' + tab.desc + '</p>' +
+      '<div class="rows">' + rows + '</div>' +
+      '<section class="est" aria-labelledby="estTitle">' +
+        '<div class="est-form">' +
+          '<div><h2 id="estTitle" style="font-size:26px;font-weight:700;margin-bottom:8px">화면설계서 예상 금액 계산</h2><p class="muted">조건을 고르면 대략적인 금액을 바로 보여드립니다. 실제 금액은 상담 후 견적서로 확정합니다.</p></div>' +
+          '<fieldset><legend class="legend">분량</legend><div class="pills">' + sizes.map(function (s, i) {
+            return '<button type="button" class="pill" id="es' + i + '" data-act="estSize" data-i="' + i + '" aria-pressed="' + (e.size === i) + '">' + s + '</button>';
+          }).join('') + '</div></fieldset>' +
+          '<div>' +
+            '<label class="check"><input type="checkbox" id="estAdmin" data-est="admin"' + (e.admin ? ' checked' : '') + '>관리자 화면도 함께 설계</label>' +
+            '<label class="check"><input type="checkbox" id="estProto" data-est="proto"' + (e.proto ? ' checked' : '') + '>클릭해 볼 수 있는 프로토타입 추가</label>' +
+            '<label class="check"><input type="checkbox" id="estRush" data-est="rush"' + (e.rush ? ' checked' : '') + '>기본 일정보다 빠르게 필요</label>' +
+          '</div>' +
+        '</div>' +
+        '<div class="est-out"><span class="muted">예상 금액 (부가세 별도)</span><span class="amount" aria-live="polite">약 ' + won(calc.amount) + '</span><span class="muted" style="font-size:15px">' + esc(calc.note) + ' 기준입니다.</span>' +
+          '<button type="button" class="btn btn-p" data-act="askEstimate" style="align-self:flex-start;margin-top:12px">이 조건으로 견적 문의</button></div>' +
+      '</section>' +
+    '</div>' +
+    '<section class="sec sec-white" style="margin-top:clamp(64px,8vw,96px)"><div class="wrap facts">' +
+      '<div><h2>가격 기준</h2><p>모든 가격은 부가세 별도 시작 가격입니다. 화면 수, 기능 수, 일정에 따라 금액이 달라지며 무료 상담 후 견적서로 확정합니다.</p></div>' +
+      '<div><h2>대금 나누기</h2><p>300만 원 이하 문서 작업은 착수 50%, 납품 50%입니다. 개발은 착수 30%, 디자인 확정 40%, 완료 30%로 나눕니다. 입금이 확인되면 세금계산서를 발행합니다.</p></div>' +
+      '<div><h2>이어서 맡기면</h2><p>기획을 맡긴 뒤 개발까지 이어가면 기획비의 20%를 개발비에서 빼드립니다. 개발 완료 후 1개월은 무상으로 오류를 수정합니다.</p></div>' +
+    '</div></section>';
+  }
+  function estimate() {
+    var e = state.est;
+    var sizes = ['40쪽 이내', '100쪽 이내', '200쪽 이내'];
+    var amount = [200, 400, 700][e.size];
+    if (e.admin) amount *= 1.3;
+    if (e.proto) amount += [150, 300, 500][e.size];
+    if (e.rush) amount *= 1.2;
+    amount = Math.round(amount / 10) * 10;
+    var parts = ['화면설계서 ' + sizes[e.size]];
+    if (e.admin) parts.push('관리자 화면 포함');
+    if (e.proto) parts.push('프로토타입 포함');
+    if (e.rush) parts.push('일정 단축');
+    return { amount: amount, note: parts.join(', ') };
+  }
+
+  /* ---------- 화면: 산출물 예시 ---------- */
+  function viewWork() {
+    return '<div class="wrap">' +
+      '<section class="page-head"><h1 class="h-page" tabindex="-1">산출물 예시</h1><p>상품마다 어떤 문서를 받게 되는지 보여드립니다. 그림은 구성을 설명하기 위한 예시이며, 실제 산출물은 프로젝트에 맞춰 만듭니다.</p></section>' +
+      '<div class="thumbs" style="padding-bottom:clamp(64px,8vw,104px)">' + WORK.map(function (w) {
+        return '<button type="button" class="thumb" data-act="openWork" data-key="' + w.key + '"><span class="thumb-img">' + THUMBS[w.key]() + '</span><b>' + w.title + '</b><small>' + w.short + '</small></button>';
+      }).join('') + '</div>' +
+    '</div>';
+  }
+  function openWork(key) {
+    var w = WORK.filter(function (x) { return x.key === key; })[0];
+    if (!w) return;
+    var dlg = document.getElementById('workDialog');
+    dlg.innerHTML = '<div class="dlg"><div class="dlg-img"><span class="thumb-img">' + THUMBS[w.key]() + '</span></div>' +
+      '<div class="dlg-body"><button type="button" class="dlg-close" data-act="closeWork" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5L15 15M15 5L5 15" stroke-width="2"></path></svg></button>' +
+        '<h2 id="dlgTitle" style="font-size:26px;font-weight:700;padding-right:40px">' + w.title + '</h2><p class="muted" style="font-size:16px;line-height:1.7">' + w.desc + '</p>' +
+        '<div><p style="font-weight:600;margin-bottom:6px">들어가는 내용</p><ul>' + w.includes.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' +
+        '<p><span class="muted">받는 형식</span> ' + w.formats + '</p>' +
+        '<div class="actions" style="margin-top:8px"><button type="button" class="btn btn-p" data-act="askWork" data-key="' + w.key + '">이 산출물로 문의</button><a class="btn btn-s" href="#/services/' + w.tab + '" data-act="closeWork">가격 보기</a></div>' +
+      '</div></div>';
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  function closeWork() {
+    var dlg = document.getElementById('workDialog');
+    if (dlg.open) { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+  }
+
+  /* ---------- 화면: 견적 문의 ---------- */
+  function viewQuote() {
+    var f = state.form;
+    var labels = ['필요한 서비스', '프로젝트 정보', '연락처'];
+    var steps = labels.map(function (l, i) {
+      var n = i + 1;
+      var cls = f.step > n ? 'done' : (f.step === n ? 'cur' : '');
+      return '<li class="' + cls + '"' + (f.step === n ? ' aria-current="step"' : '') + '><span class="c">' + n + '</span>' + l + '</li>';
+    }).join('');
+
+    function pills(key, list, multi) {
+      return '<div class="pills">' + list.map(function (v, i) {
+        var on = multi ? f[key].indexOf(v) >= 0 : f[key] === v;
+        return '<button type="button" class="pill" id="p-' + key + '-' + i + '" data-act="' + (multi ? 'pickMulti' : 'pickOne') + '" data-key="' + key + '" data-val="' + esc(v) + '" aria-pressed="' + on + '">' + esc(v) + '</button>';
+      }).join('') + '</div>';
+    }
+
+    var body = '';
+    if (f.step === 1) {
+      body = '<div><h2>어떤 도움이 필요하세요?</h2><p class="muted" style="margin-top:8px">해당하는 서비스를 모두 고르세요. 잘 모르겠다면 상담과 컨설팅을 고르면 됩니다.</p></div>' +
+        '<div class="svc-grid">' + SERVICES.map(function (s) {
+          var on = f.services.indexOf(s.id) >= 0;
+          return '<button type="button" class="svc" id="svc-' + s.id + '" data-act="toggleSvc" data-id="' + s.id + '" aria-pressed="' + on + '"><small>' + s.stage + '<svg class="tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 9.5L7.5 13L14.5 5" stroke-width="2.2"></path></svg></small><b>' + s.label + '</b></button>';
+        }).join('') + '</div>' +
+        '<fieldset><legend class="legend">지금 어떤 상황인가요?</legend>' + pills('situation', ['아이디어만 있어요', '기획 문서가 있어요', '디자인까지 있어요', '운영 중인 서비스예요']) + '</fieldset>';
+    } else if (f.step === 2) {
+      body = '<div><h2>프로젝트를 알려주세요</h2><p class="muted" style="margin-top:8px">정해지지 않은 항목은 비워두셔도 됩니다. 상담에서 함께 정합니다.</p></div>' +
+        '<div class="field"><label for="f-projectName">프로젝트 이름</label><input class="input" id="f-projectName" data-field="projectName" type="text" maxlength="80" value="' + esc(f.projectName) + '" placeholder="예: 반려동물 산책 매칭 앱"></div>' +
+        '<div class="field"><label for="f-desc">어떤 서비스인가요?</label><textarea class="input" id="f-desc" data-field="desc" maxlength="2000" placeholder="누구를 위한 서비스인지, 꼭 필요한 기능은 무엇인지 편하게 적어주세요. 참고할 서비스가 있다면 링크도 좋습니다.">' + esc(f.desc) + '</textarea></div>' +
+        '<fieldset><legend class="legend">예산</legend>' + pills('budget', ['300만 원 미만', '300만~1,000만 원', '1,000만~3,000만 원', '3,000만 원 이상', '상담 후 결정']) + '</fieldset>' +
+        '<fieldset><legend class="legend">희망 일정</legend>' + pills('timeline', ['1개월 안', '1~3개월', '3개월 이상', '일정 협의 가능']) + '</fieldset>' +
+        '<fieldset><legend class="legend">산출물을 받을 형식 (여러 개 선택)</legend>' + pills('formats', ['PPT', 'Figma', 'Word나 한글', 'PDF', '노션'], true) + '</fieldset>' +
+        '<label class="check"><input type="checkbox" id="f-gov" data-field="gov"' + (f.gov ? ' checked' : '') + '>정부지원사업이나 연구과제 예산으로 진행합니다</label>';
+    } else if (f.step === 3) {
+      body = '<div><h2>연락받을 정보를 남겨주세요</h2><p class="muted" style="margin-top:8px">상담 일정과 견적서는 이메일로도 안내드립니다.</p></div>' +
+        '<div class="grid2">' +
+          '<div class="field"><label for="f-name">이름 (필수)</label><input class="input" id="f-name" data-field="name" type="text" autocomplete="name" maxlength="40" value="' + esc(f.name) + '"></div>' +
+          '<div class="field"><label for="f-company">회사명</label><input class="input" id="f-company" data-field="company" type="text" autocomplete="organization" maxlength="60" value="' + esc(f.company) + '"></div>' +
+          '<div class="field"><label for="f-email">이메일 (필수)</label><input class="input" id="f-email" data-field="email" type="email" autocomplete="email" maxlength="120" value="' + esc(f.email) + '"></div>' +
+          '<div class="field"><label for="f-phone">연락처</label><input class="input" id="f-phone" data-field="phone" type="tel" autocomplete="tel" maxlength="20" value="' + esc(f.phone) + '" placeholder="010-0000-0000"></div>' +
+        '</div>' +
+        '<div class="card" style="padding:16px 20px;background:var(--paper)">' +
+          '<label class="check"><input type="checkbox" id="f-tax" data-field="taxInvoice"' + (f.taxInvoice ? ' checked' : '') + '>세금계산서 발행이 필요합니다</label>' +
+          '<label class="check"><input type="checkbox" id="f-agree" data-field="agree"' + (f.agree ? ' checked' : '') + '>상담을 위한 개인정보 수집과 이용에 동의합니다 (필수)</label>' +
+          '<p class="muted" style="font-size:14px;line-height:1.7;margin:4px 0 4px 30px">수집 항목은 이름, 회사명, 이메일, 연락처입니다. 상담 안내와 견적서 발송에만 씁니다. <a href="#/privacy">개인정보처리방침</a></p>' +
+        '</div>';
+    } else {
+      var p = state.lastSubmitted || {};
+      body = '<div style="display:flex;flex-direction:column;gap:14px">' +
+          '<svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle class="k-acc" cx="24" cy="24" r="22" stroke-width="2.5"></circle><path class="k-acc" d="M14 24.5L21 31L34 17" stroke-width="3"></path></svg>' +
+          '<h2 style="font-size:32px">견적 문의를 보냈습니다</h2>' +
+          '<p class="muted" style="font-size:17px;line-height:1.7">문의번호는 <b style="color:var(--ink)">' + esc(p.id) + '</b>입니다. 내 프로젝트에서 무료 상담 시간을 바로 고를 수 있습니다.</p>' +
+        '</div>' +
+        '<dl class="summary">' + summaryRows(p) + '</dl>' +
+        '<div class="actions"><a class="btn btn-p" href="#/projects/' + esc(p.id) + '">상담 시간 고르러 가기</a><button type="button" class="btn btn-s" data-act="newQuote">새 문의 작성</button></div>';
+    }
+
+    var nav = f.step < 4 ?
+      '<div class="q-nav">' + (f.error ? '<p class="error" role="alert">' + esc(f.error) + '</p>' : '') +
+        '<div><div>' + (f.step > 1 ? '<button type="button" class="btn btn-s" data-act="qPrev">이전</button>' : '') + '</div>' +
+        '<div style="display:flex;align-items:center;gap:16px"><span class="muted" style="font-size:15px">' + f.step + ' / 3</span>' +
+        '<button type="button" class="btn btn-p" id="qNextBtn" data-act="qNext"' + (state.busy ? ' disabled' : '') + '>' + (f.step === 3 ? (state.busy ? '보내는 중' : '견적 문의 보내기') : '다음') + '</button></div></div>' +
+      '</div>' : '';
+
+    var product = (f.fromProduct && f.step < 4) ?
+      '<div class="note" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px"><span>선택한 상품: ' + esc(f.fromProduct) + '</span><button type="button" class="linkbtn" data-act="clearProduct" style="color:var(--accent-ink)">선택 해제</button></div>' : '';
+
+    return '<div class="wrap"><div class="q-layout">' +
+      '<aside class="q-side">' +
+        '<div><h1 class="h-page" style="font-size:40px" tabindex="-1">견적 문의</h1><p class="muted" style="font-size:17px;margin-top:12px">세 단계에 답하면 영업일 하루 안에 확인합니다.</p></div>' +
+        '<ol class="q-steps">' + steps + '</ol>' +
+        '<div style="padding-top:28px;border-top:1px solid var(--line)"><h2 style="font-size:16px;font-weight:700;margin-bottom:10px">문의를 보낸 뒤에는</h2><p class="muted" style="font-size:15px;line-height:1.75">내 프로젝트에서 무료 상담 시간을 고를 수 있습니다. 상담 후 3영업일 안에 견적서를 올려드리고, 견적서를 받은 뒤 진행 여부를 정하시면 됩니다.</p></div>' +
+      '</aside>' +
+      '<div class="q-main card" id="qCard">' + product + body + nav + '</div>' +
+    '</div></div>';
+  }
+  function summaryRows(p) {
+    var rows = [
+      ['프로젝트', p.projectName || '이름 없음'],
+      ['서비스', (p.services || []).map(svcLabel).join(', ')],
+      ['선택한 상품', p.fromProduct || '선택하지 않음'],
+      ['지금 상황', p.situation || '선택하지 않음'],
+      ['예산', p.budget || '상담 후 결정'],
+      ['희망 일정', p.timeline || '일정 협의 가능'],
+      ['받을 형식', (p.formats && p.formats.length) ? p.formats.join(', ') : '상담 때 정하기'],
+      ['정부지원사업', p.gov ? '예' : '아니요'],
+      ['세금계산서', p.taxInvoice ? '발행 필요' : '필요 없음']
+    ];
+    if (p.desc) rows.splice(1, 0, ['서비스 설명', p.desc]);
+    return rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
+  }
+  function svcLabel(id) { var s = SERVICES.filter(function (x) { return x.id === id; })[0]; return s ? s.label : id; }
+
+  function qNext() {
+    var f = state.form;
+    if (f.step === 1 && f.services.length === 0) { f.error = '필요한 서비스를 하나 이상 고르세요.'; render(); return; }
+    if (f.step === 3) {
+      if (!f.name.trim()) { f.error = '이름을 입력하세요.'; render(); focusId('f-name'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) { f.error = '연락받을 이메일 주소를 정확히 입력하세요.'; render(); focusId('f-email'); return; }
+      if (!f.agree) { f.error = '개인정보 수집과 이용에 동의해야 문의를 보낼 수 있습니다.'; render(); return; }
+      submitQuote();
+      return;
+    }
+    f.error = '';
+    f.step += 1;
+    render();
+    scrollToCard();
+  }
+  function submitQuote() {
+    var f = state.form;
+    if (state.busy) return;
+    if (store.mode === 'pending') { f.error = '페이지를 준비하는 중입니다. 잠시 후 다시 눌러주세요.'; render(); return; }
+    var id = newInquiryId();
+    var now = new Date().toISOString();
+    var item = {
+      id: id, createdAt: now, status: 'received',
+      services: f.services.slice(), fromProduct: f.fromProduct, situation: f.situation,
+      projectName: f.projectName.trim(), desc: f.desc.trim(), budget: f.budget, timeline: f.timeline,
+      formats: f.formats.slice(), gov: f.gov, taxInvoice: f.taxInvoice,
+      slot: '', quoteAmount: null, message: ''
+    };
+    var customer = { name: f.name.trim(), company: f.company.trim(), email: f.email.trim(), phone: f.phone.trim() };
+    state.busy = true; f.error = ''; render();
+    writeItem(store.uid || 'local', id, item, customer).then(function () {
+      state.busy = false;
+      state.lastSubmitted = item;
+      var keep = { name: f.name, company: f.company, email: f.email, phone: f.phone };
+      state.form = Object.assign(blankForm(), keep, { step: 4 });
+      render();
+      scrollToCard();
+      toast('견적 문의를 보냈습니다');
+    }).catch(function (err) {
+      state.busy = false;
+      f.error = (err && err.code === 'quota_exceeded') ? '저장 공간이 가득 차 문의를 보낼 수 없습니다. 이메일로 문의해 주세요.' : '문의를 저장하지 못했습니다. 잠시 후 다시 보내주세요.';
+      render();
+    });
+  }
+  function scrollToCard() {
+    var c = document.getElementById('qCard');
+    if (c && c.getBoundingClientRect().top < 72) window.scrollTo({ top: window.scrollY + c.getBoundingClientRect().top - 96 });
+  }
+
+  /* ---------- 화면: 내 프로젝트 ---------- */
+  function timeline(item) {
+    var st = STATUS[item.status] || STATUS.received;
+    var cur = item.status === 'closed' ? 6 : st.step;
+    return '<ol class="tl">' + STEP_LABELS.map(function (l, i) {
+      var cls = i < cur ? 'done' : (i === cur ? 'cur' : '');
+      var s = i < cur ? '완료' : (i === cur ? '진행 중' : '대기');
+      if (i === 1 && cur === 1) s = st.customer;
+      return '<li class="' + cls + '"' + (i === cur ? ' aria-current="step"' : '') + '><span class="d">' + (i + 1) + '</span><span class="t"><b>' + l + '</b><span>' + s + '</span></span></li>';
+    }).join('') + '</ol>';
+  }
+  function docRows(item) {
+    var k = statusIdx(item.status);
+    function row(name, detail, ok, label) {
+      return '<div class="doc-row"><div><b>' + name + '</b><span>' + detail + '</span></div><span class="badge ' + (ok ? 'badge-ok' : 'badge-wait') + '">' + label + '</span></div>';
+    }
+    var amount = item.quoteAmount ? won(item.quoteAmount) + ', 부가세 별도' : '견적서에서 확정';
+    return row('견적서', amount, k >= 2, k >= 2 ? '발송됨' : '상담 후 발송') +
+      row('용역 계약서', '전자서명으로 체결', k >= 4, k >= 4 ? '서명 완료' : (k === 3 ? '서명 대기' : '대기')) +
+      row('착수금', '계약 후 요청서와 함께 안내', k >= 4, k >= 4 ? '입금 확인' : '대기') +
+      row('잔금', '최종 납품 후 요청', k >= 6, k >= 6 ? '입금 확인' : (k === 5 ? '입금 요청' : '대기')) +
+      row('세금계산서', '전자세금계산서로 발행', k >= 6, k >= 6 ? '발행 완료' : (k >= 4 ? '착수금분 발행' : '입금 후 발행'));
+  }
+  function actionCard(item) {
+    var msg = item.message ? '<div class="note" style="margin-top:4px"><b>담당자 메시지</b><br>' + esc(item.message) + '</div>' : '';
+    var s = item.status;
+    if (s === 'received') {
+      var pick = state.slotPick[item.id] || item.slot || '';
+      return '<section class="card card-strong" style="display:flex;flex-direction:column;gap:20px" aria-labelledby="actTitle">' +
+        '<div><h2 id="actTitle" style="font-size:24px;font-weight:700">무료 상담 시간을 골라주세요</h2><p class="muted" style="margin-top:8px;line-height:1.7">20~30분 화상으로 진행합니다. 맞는 시간이 없다면 ' + esc(SITE.email) + '로 알려주세요.</p></div>' +
+        '<div class="pills" role="group" aria-label="상담 가능 시간">' + SLOTS.map(function (v, i) {
+          return '<button type="button" class="pill" id="slot-' + i + '" data-act="pickSlot" data-id="' + esc(item.id) + '" data-val="' + esc(v) + '" aria-pressed="' + (pick === v) + '">' + v + '</button>';
+        }).join('') + '</div>' +
+        (state.slotError === item.id ? '<p class="error" role="alert">상담받을 시간을 하나 고르세요.</p>' : '') +
+        '<button type="button" class="btn btn-p" data-act="bookSlot" data-id="' + esc(item.id) + '" style="align-self:flex-start">상담 예약하기</button>' + msg +
+      '</section>';
+    }
+    var map = {
+      booked: ['상담을 ' + esc(item.slot) + '로 예약했습니다', '화상 회의 링크는 상담 하루 전에 이메일로 보내드립니다. 상담이 끝나면 3영업일 안에 이 화면에 견적서가 올라옵니다.', '<button type="button" class="btn btn-s btn-sm" data-act="changeSlot" data-id="' + esc(item.id) + '">시간 변경</button>'],
+      quoted: ['견적서가 도착했습니다', '견적 금액은 ' + (item.quoteAmount ? won(item.quoteAmount) : '견적서 참고') + '(부가세 별도)입니다. 내용을 확인한 뒤 수락하면 계약서를 보내드립니다.', '<button type="button" class="btn btn-p" data-act="acceptQuote" data-id="' + esc(item.id) + '">견적 수락</button>'],
+      accepted: ['계약서 서명을 기다리고 있습니다', '이메일로 보낸 전자계약서에 서명하고 착수금을 입금하면 작업을 시작합니다.', ''],
+      contracted: ['작업을 진행하고 있습니다', '중간 산출물이 올라오면 이메일로 알려드립니다. 계약된 횟수 안에서 수정을 요청할 수 있습니다.', ''],
+      delivered: ['최종 산출물을 납품했습니다', '잔금 입금이 확인되면 세금계산서를 발행합니다. 납품 후 1개월 동안 오류는 무상으로 고칩니다.', ''],
+      closed: ['프로젝트가 끝났습니다', '함께해 주셔서 감사합니다. 운영 중 수정이나 개선이 필요하면 유지보수로 문의해 주세요.', '<button type="button" class="btn btn-o" data-act="askMaint">유지보수 문의</button>']
+    };
+    var m = map[s] || map.booked;
+    return '<section class="card card-strong" style="display:flex;flex-direction:column;gap:14px"><h2 style="font-size:24px;font-weight:700">' + m[0] + '</h2><p class="muted" style="line-height:1.7" role="status">' + m[1] + '</p>' + (m[2] ? '<div class="actions">' + m[2] + '</div>' : '') + msg + '</section>';
+  }
+  function viewProjects(id) {
+    var head = '<section class="page-head" style="padding-bottom:0"><h1 class="h-page" tabindex="-1">내 프로젝트</h1><p>문의한 프로젝트의 진행 상황, 견적서, 계약과 결제 상태를 한곳에서 확인합니다.</p></section>';
+    if (store.mode === 'pending') {
+      return '<div class="wrap">' + head + '<div class="card empty" style="margin:40px 0 96px"><h2>불러오는 중입니다</h2><p class="muted">잠시만 기다려 주세요.</p></div></div>';
+    }
+    var memNote = store.mode === 'memory' ? '<p class="note" style="margin-top:24px">' + (store.persisted ? '데모 모드입니다. 문의 내역은 지금 쓰는 브라우저에만 저장됩니다.' : '지금 여는 환경에서는 저장 기능을 쓸 수 없어, 새로고침하면 문의 내역이 사라집니다.') + '</p>' : '';
+    var items = myItems();
+    if (!items.length) {
+      return '<div class="wrap">' + head + memNote + '<div class="card empty" style="margin:40px 0 96px"><h2>아직 문의한 프로젝트가 없습니다</h2><p class="muted" style="font-size:17px">견적 문의를 보내면 이곳에서 상담 예약부터 납품까지 진행 상황을 볼 수 있습니다.</p><a class="btn btn-p btn-lg" href="#/quote">견적 문의하기</a></div></div>';
+    }
+    var active = items.filter(function (x) { return x.id === id; })[0] || items[0];
+    var list = items.map(function (x) {
+      var st = STATUS[x.status] || STATUS.received;
+      return '<a class="pitem" href="#/projects/' + esc(x.id) + '"' + (x === active ? ' aria-current="true"' : '') + '><b>' + esc(x.projectName || x.services.map(svcLabel).join(', ')) + '</b><span><span>' + esc(st.customer) + '</span><span>' + fmtDate(x.createdAt) + '</span></span></a>';
+    }).join('');
+    var st = STATUS[active.status] || STATUS.received;
+    return '<div class="wrap">' + head + memNote +
+      '<div class="two">' +
+        '<div class="side-stack">' +
+          '<section class="card" style="padding:24px"><h2 style="font-size:17px;font-weight:700;margin-bottom:14px">프로젝트 ' + items.length + '건</h2><div class="plist">' + list + '</div><a class="linkbtn" href="#/quote" data-act="newQuote" style="margin-top:8px">새 견적 문의</a></section>' +
+          '<section class="card" style="padding:28px"><h2 style="font-size:17px;font-weight:700;margin-bottom:20px">진행 단계</h2>' + timeline(active) + '</section>' +
+        '</div>' +
+        '<div class="main-stack">' +
+          '<div style="display:flex;flex-direction:column;gap:10px"><span class="badge badge-acc" style="align-self:flex-start">' + esc(st.customer) + '</span>' +
+            '<h2 class="h-sec" style="font-size:clamp(26px,3vw,36px)">' + esc(active.projectName || '이름 없는 프로젝트') + '</h2>' +
+            '<p class="muted">문의번호 ' + esc(active.id) + ', ' + fmtDate(active.createdAt) + ' 접수</p></div>' +
+          actionCard(active) +
+          '<section class="card"><h2 style="font-size:19px;font-weight:700;margin-bottom:12px">계약과 결제</h2>' + docRows(active) + '</section>' +
+          '<section class="card"><h2 style="font-size:19px;font-weight:700;margin-bottom:12px">문의한 내용</h2><dl class="summary">' + summaryRows(active) + '</dl></section>' +
+        '</div>' +
+      '</div></div>';
+  }
+
+  /* ---------- 화면: 관리자 ---------- */
+  function viewAdmin(uid, id) {
+    var head = '<section class="page-head" style="padding-bottom:0"><h1 class="h-page" tabindex="-1">문의 관리</h1><p>들어온 견적 문의를 확인하고 상태와 견적 금액을 바꿉니다. 바꾼 내용은 고객의 내 프로젝트 화면에 바로 보입니다.</p></section>';
+    if (store.mode === 'pending') return '<div class="wrap">' + head + '<div class="card empty" style="margin:40px 0 96px"><h2>불러오는 중입니다</h2></div></div>';
+    if (!store.isAdmin) {
+      return '<div class="wrap"><div class="card empty" style="margin:72px 0 120px"><h1 class="h-sec" tabindex="-1">관리자만 볼 수 있는 페이지입니다</h1><p class="muted" style="font-size:17px">이 페이지는 사이트를 편집할 수 있는 사람에게만 열립니다.</p><a class="btn btn-s" href="#/">홈으로</a></div></div>';
+    }
+    var rows = adminRows();
+    var counts = { all: rows.length };
+    STATUS_ORDER.forEach(function (s) { counts[s] = 0; });
+    var inProgress = 0, won_ = 0;
+    rows.forEach(function (r) {
+      counts[r.item.status] = (counts[r.item.status] || 0) + 1;
+      var k = statusIdx(r.item.status);
+      if (k >= 3 && k <= 5) inProgress++;
+      if (k >= 3 && r.item.quoteAmount) won_ += Number(r.item.quoteAmount) || 0;
+    });
+    var stats = '<div class="stats">' +
+      '<div class="stat"><small>새 문의</small><strong>' + counts.received + '건</strong></div>' +
+      '<div class="stat"><small>상담과 견적 단계</small><strong>' + (counts.booked + counts.quoted) + '건</strong></div>' +
+      '<div class="stat"><small>계약 후 진행 중</small><strong>' + inProgress + '건</strong></div>' +
+      '<div class="stat"><small>수주 금액 합계</small><strong>' + won(won_) + '</strong></div>' +
+    '</div>';
+    var filters = [['all', '전체']].concat(STATUS_ORDER.map(function (s) { return [s, STATUS[s].label]; }));
+    var filterHtml = '<div class="pills" role="group" aria-label="상태로 거르기" style="margin-bottom:16px">' + filters.map(function (fl) {
+      return '<button type="button" class="pill" id="flt-' + fl[0] + '" data-act="adminFilter" data-val="' + fl[0] + '" aria-pressed="' + (state.adminFilter === fl[0]) + '" style="min-height:40px;font-size:14px">' + fl[1] + ' ' + (counts[fl[0]] || 0) + '</button>';
+    }).join('') + '</div>';
+    var shown = rows.filter(function (r) { return state.adminFilter === 'all' || r.item.status === state.adminFilter; });
+    var active = rows.filter(function (r) { return r.uid === uid && r.item.id === id; })[0] || shown[0];
+    var list = shown.length ? shown.map(function (r) {
+      var st = STATUS[r.item.status] || STATUS.received;
+      var isAct = active && r.uid === active.uid && r.item.id === active.item.id;
+      return '<a class="pitem" href="#/admin/' + encodeURIComponent(r.uid) + '/' + encodeURIComponent(r.item.id) + '"' + (isAct ? ' aria-current="true"' : '') + '><b>' + esc(r.item.projectName || (r.item.services || []).map(svcLabel).join(', ')) + '</b><span><span>' + esc(r.customer.name || '이름 없음') + (r.customer.company ? ', ' + esc(r.customer.company) : '') + '</span><span class="badge ' + (r.item.status === 'received' ? 'badge-acc' : 'badge-wait') + '" style="min-height:24px;font-size:13px">' + st.label + '</span></span></a>';
+    }).join('') : '<p class="muted">해당하는 문의가 없습니다.</p>';
+
+    var detail = '<div class="card empty"><h2>아직 들어온 문의가 없습니다</h2><p class="muted">견적 문의 페이지에서 문의가 들어오면 이곳에 표시됩니다.</p></div>';
+    if (active) {
+      var key = active.uid + '/' + active.item.id;
+      var d = state.drafts[key] || { status: active.item.status, quoteAmount: active.item.quoteAmount || '', message: active.item.message || '' };
+      state.drafts[key] = d;
+      var c = active.customer;
+      detail = '<div class="main-stack">' +
+        '<div style="display:flex;flex-direction:column;gap:8px"><span class="badge badge-acc" style="align-self:flex-start">' + (STATUS[active.item.status] || STATUS.received).label + '</span><h2 class="h-sec" style="font-size:clamp(24px,3vw,32px)">' + esc(active.item.projectName || '이름 없는 프로젝트') + '</h2><p class="muted">문의번호 ' + esc(active.item.id) + ', ' + fmtDate(active.item.createdAt) + ' 접수' + (active.item.slot ? ', 상담 희망 ' + esc(active.item.slot) : '') + '</p></div>' +
+        '<section class="card card-strong" style="display:flex;flex-direction:column;gap:20px"><h3 style="font-size:20px;font-weight:700">진행 상태 바꾸기</h3>' +
+          '<div class="grid2">' +
+            '<div class="field"><label for="ad-status">상태</label><select class="input" id="ad-status" data-draft="status" data-key="' + esc(key) + '">' + STATUS_ORDER.map(function (s) { return '<option value="' + s + '"' + (d.status === s ? ' selected' : '') + '>' + STATUS[s].label + '</option>'; }).join('') + '</select></div>' +
+            '<div class="field"><label for="ad-amount">견적 금액 (만 원, 부가세 별도)</label><input class="input" id="ad-amount" data-draft="quoteAmount" data-key="' + esc(key) + '" type="text" inputmode="numeric" maxlength="7" value="' + esc(d.quoteAmount) + '" placeholder="예: 400"></div>' +
+          '</div>' +
+          '<div class="field"><label for="ad-msg">고객에게 보일 메시지</label><textarea class="input" id="ad-msg" data-draft="message" data-key="' + esc(key) + '" maxlength="1000" placeholder="예: 상담 내용을 반영해 화면설계서 Standard로 견적서를 올렸습니다.">' + esc(d.message) + '</textarea></div>' +
+          (state.adminError ? '<p class="error" role="alert">' + esc(state.adminError) + '</p>' : '') +
+          '<button type="button" class="btn btn-p" data-act="adminSave" data-uid="' + esc(active.uid) + '" data-id="' + esc(active.item.id) + '" style="align-self:flex-start"' + (state.busy ? ' disabled' : '') + '>' + (state.busy ? '저장하는 중' : '저장하고 고객에게 반영') + '</button>' +
+        '</section>' +
+        '<section class="card"><h3 style="font-size:19px;font-weight:700;margin-bottom:12px">고객 정보</h3><dl class="summary">' +
+          [['이름', c.name], ['회사명', c.company || '없음'], ['이메일', c.email], ['연락처', c.phone || '없음']].map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') +
+          (c.email ? '<div><dt>바로 연락</dt><dd><a href="mailto:' + esc(c.email) + '">이메일 보내기</a></dd></div>' : '') +
+        '</dl></section>' +
+        '<section class="card"><h3 style="font-size:19px;font-weight:700;margin-bottom:12px">문의 내용</h3><dl class="summary">' + summaryRows(active.item) + '</dl></section>' +
+      '</div>';
+    }
+    var demoNote = store.demo ? '<p class="note" style="margin-top:24px">데모 모드입니다. 문의는 이 브라우저에만 저장되고, 관리자 페이지도 누구나 열 수 있습니다. 실제로 운영할 때는 서버 저장소와 관리자 로그인을 연결해야 합니다.</p>' : '';
+    return '<div class="wrap">' + head + demoNote +
+      '<div style="padding-top:32px">' + stats + '</div>' +
+      '<div class="two two-wide" style="padding-top:24px">' +
+        '<section class="card" style="padding:24px"><h2 style="font-size:17px;font-weight:700;margin-bottom:14px">문의 목록</h2>' + filterHtml + '<div class="plist">' + list + '</div></section>' +
+        detail +
+      '</div></div>';
+  }
+
+  /* ---------- 화면: 약관, 개인정보, 404 ---------- */
+  function viewPrivacy() {
+    return '<div class="wrap"><article class="legal">' +
+      '<h1 class="h-page" tabindex="-1">개인정보처리방침</h1>' +
+      '<p>' + esc(SITE.company) + '(이하 회사)은 견적 문의와 계약 진행을 위해 필요한 최소한의 개인정보만 수집합니다.</p>' +
+      '<section><h2>수집하는 항목</h2><ul><li>필수: 이름, 이메일</li><li>선택: 회사명, 연락처</li><li>문의 과정에서 입력한 프로젝트 설명</li></ul></section>' +
+      '<section><h2>이용 목적</h2><p>상담 일정 안내, 견적서 발송, 계약과 대금 청구, 세금계산서 발행에 씁니다.</p></section>' +
+      '<section><h2>보관 기간</h2><p>계약하지 않은 문의는 접수일로부터 1년 뒤 파기합니다. 계약한 경우에는 관계 법령이 정한 기간 동안 보관합니다.</p></section>' +
+      '<section><h2>제3자 제공</h2><p>법령에 따른 경우를 제외하고 고객의 동의 없이 제3자에게 제공하지 않습니다.</p></section>' +
+      '<section><h2>문의처</h2><p>개인정보 관련 문의는 ' + esc(SITE.email) + '로 보내주세요.</p></section>' +
+      '<p>시행일: [시행일]</p>' +
+    '</article></div>';
+  }
+  function viewTerms() {
+    return '<div class="wrap"><article class="legal">' +
+      '<h1 class="h-page" tabindex="-1">이용약관</h1>' +
+      '<section><h2>서비스 범위</h2><p>회사는 서비스 기획 문서 작성, 화면설계, 디자인, 개발, 유지보수 용역을 제공합니다. 구체적인 범위와 산출물은 프로젝트마다 견적서와 용역 계약서로 정합니다.</p></section>' +
+      '<section><h2>견적과 계약</h2><p>사이트에 표시된 가격은 부가세 별도 시작 가격입니다. 최종 금액과 일정은 무료 상담 후 발송하는 견적서와 계약서를 따릅니다.</p></section>' +
+      '<section><h2>수정과 변경</h2><p>계약 범위 안의 수정은 계약서에 정한 횟수만큼 무료입니다. 기능이 추가되거나 범위가 바뀌는 변경은 별도 견적으로 진행합니다.</p></section>' +
+      '<section><h2>산출물 권리</h2><p>잔금 입금이 확인되면 산출물의 이용 권리가 고객에게 넘어갑니다. 세부 조건은 계약서를 따릅니다.</p></section>' +
+      '<p>시행일: [시행일]</p>' +
+    '</article></div>';
+  }
+  function view404() {
+    return '<div class="wrap"><div class="card empty" style="margin:72px 0 120px"><h1 class="h-sec" tabindex="-1">페이지를 찾을 수 없습니다</h1><p class="muted" style="font-size:17px">주소가 바뀌었거나 없는 페이지입니다.</p><a class="btn btn-p" href="#/">홈으로</a></div></div>';
+  }
+
+  /* ---------- 라우터와 렌더 ---------- */
+  var TITLES = { home: '기획부터 개발, 유지보수까지', services: '서비스와 가격', work: '산출물 예시', quote: '견적 문의', projects: '내 프로젝트', admin: '문의 관리', privacy: '개인정보처리방침', terms: '이용약관', process: '진행 방식' };
+  function parseRoute() {
+    var h = (location.hash || '').replace(/^#\/?/, '');
+    var parts = h.split('/').filter(Boolean).map(function (p) { try { return decodeURIComponent(p); } catch (e) { return p; } });
+    return { name: parts[0] || 'home', args: parts.slice(1) };
+  }
+  var lastRouteKey = null;
+  function render(forceTop) {
+    var r = parseRoute();
+    var app = document.getElementById('app');
+    var active = document.activeElement;
+    var focusId_ = active && active.id && app.contains(active) ? active.id : null;
+    var selStart = null, selEnd = null;
+    try { if (focusId_ && typeof active.selectionStart === 'number') { selStart = active.selectionStart; selEnd = active.selectionEnd; } } catch (e) {}
+
+    var html;
+    switch (r.name) {
+      case 'home': case 'process': html = viewHome(); break;
+      case 'services': html = viewServices(r.args[0]); break;
+      case 'work': html = viewWork(); break;
+      case 'quote': html = viewQuote(); break;
+      case 'projects': html = viewProjects(r.args[0]); break;
+      case 'admin': html = viewAdmin(r.args[0], r.args[1]); break;
+      case 'privacy': html = viewPrivacy(); break;
+      case 'terms': html = viewTerms(); break;
+      default: html = view404();
+    }
+    app.innerHTML = html;
+
+    var navName = r.name === 'home' ? '' : r.name;
+    document.querySelectorAll('[data-nav]').forEach(function (a) {
+      if (a.getAttribute('data-nav') === navName) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    document.getElementById('adminLink').hidden = !store.isAdmin;
+    document.title = SITE.brand + ' | ' + (TITLES[r.name] || '페이지를 찾을 수 없습니다');
+
+    var key = r.name + '/' + r.args.join('/');
+    var routeChanged = key !== lastRouteKey;
+    if (routeChanged || forceTop) {
+      var pageChanged = !lastRouteKey || lastRouteKey.split('/')[0] !== r.name || r.name === 'process';
+      lastRouteKey = key;
+      closeMenu();
+      if (r.name === 'process') {
+        var p = document.getElementById('process');
+        if (p) window.scrollTo({ top: window.scrollY + p.getBoundingClientRect().top - 72 });
+      } else if (pageChanged || forceTop) {
+        window.scrollTo({ top: 0 });
+        var h1 = app.querySelector('h1');
+        if (h1 && lastRouteKey && document.readyState === 'complete') h1.focus({ preventScroll: true });
+      }
+    } else if (focusId_) {
+      var el = document.getElementById(focusId_);
+      if (el) {
+        el.focus({ preventScroll: true });
+        try { if (selStart !== null) el.setSelectionRange(selStart, selEnd); } catch (e) {}
+      }
+    }
+  }
+  function focusId(id) { var el = document.getElementById(id); if (el) el.focus(); }
+
+  /* ---------- 이벤트 ---------- */
+  var menuBtn = document.getElementById('menuBtn');
+  var nav = document.getElementById('nav');
+  function closeMenu() { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.setAttribute('aria-label', '메뉴 열기'); }
+  menuBtn.addEventListener('click', function () {
+    var open = !nav.classList.contains('open');
+    nav.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) { closeMenu(); menuBtn.focus(); } });
+
+  var ACTIONS = {
+    spec: function (t) { var n = Number(t.dataset.n); state.specOn = state.specOn === n ? 0 : n; render(); },
+    openWork: function (t) { openWork(t.dataset.key); },
+    closeWork: function () { closeWork(); },
+    askWork: function (t) {
+      var w = WORK.filter(function (x) { return x.key === t.dataset.key; })[0];
+      closeWork();
+      state.form = Object.assign(state.form, { step: 1, services: [w.svc], fromProduct: w.product, error: '' });
+      go('#/quote');
+    },
+    askProduct: function (t) {
+      state.form = Object.assign(state.form, { step: 1, services: [t.dataset.svc], fromProduct: t.dataset.name, error: '' });
+      go('#/quote');
+    },
+    askEstimate: function () {
+      var c = estimate();
+      var svcs = ['wireframe'];
+      if (state.est.proto) svcs.push('prototype');
+      var budget = c.amount < 300 ? '300만 원 미만' : (c.amount < 1000 ? '300만~1,000만 원' : '1,000만~3,000만 원');
+      state.form = Object.assign(state.form, { step: 1, services: svcs, budget: budget, fromProduct: c.note + ', 예상 ' + won(c.amount), error: '' });
+      go('#/quote');
+    },
+    askMaint: function () {
+      state.form = Object.assign(state.form, { step: 1, services: ['maint'], situation: '운영 중인 서비스예요', fromProduct: '', error: '' });
+      go('#/quote');
+    },
+    estSize: function (t) { state.est.size = Number(t.dataset.i); render(); },
+    toggleSvc: function (t) {
+      var f = state.form, id = t.dataset.id, i = f.services.indexOf(id);
+      if (i >= 0) f.services.splice(i, 1); else f.services.push(id);
+      f.error = ''; render();
+    },
+    pickOne: function (t) { var f = state.form, k = t.dataset.key, v = t.dataset.val; f[k] = f[k] === v ? '' : v; f.error = ''; render(); },
+    pickMulti: function (t) { var arr = state.form[t.dataset.key], v = t.dataset.val, i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); render(); },
+    qNext: function () { qNext(); },
+    qPrev: function () { state.form.error = ''; state.form.step = Math.max(1, state.form.step - 1); render(); scrollToCard(); },
+    clearProduct: function () { state.form.fromProduct = ''; render(); },
+    newQuote: function () {
+      var f = state.form;
+      state.form = Object.assign(blankForm(), { name: f.name, company: f.company, email: f.email, phone: f.phone });
+      go('#/quote');
+    },
+    pickSlot: function (t) { state.slotPick[t.dataset.id] = t.dataset.val; state.slotError = null; render(); },
+    bookSlot: function (t) {
+      var id = t.dataset.id, slot = state.slotPick[id];
+      if (!slot) { state.slotError = id; render(); return; }
+      state.slotError = null;
+      writeItem(store.uid || 'local', id, { slot: slot, status: 'booked' }).then(function () {
+        render(); toast('상담을 ' + slot + '로 예약했습니다');
+      }).catch(function () { toast('예약을 저장하지 못했습니다. 다시 시도해 주세요.'); });
+    },
+    changeSlot: function (t) {
+      writeItem(store.uid || 'local', t.dataset.id, { status: 'received' }).then(function () { render(); }).catch(function () { toast('변경하지 못했습니다. 다시 시도해 주세요.'); });
+    },
+    acceptQuote: function (t) {
+      writeItem(store.uid || 'local', t.dataset.id, { status: 'accepted' }).then(function () {
+        render(); toast('견적을 수락했습니다. 계약서를 보내드립니다');
+      }).catch(function () { toast('저장하지 못했습니다. 다시 시도해 주세요.'); });
+    },
+    adminFilter: function (t) { state.adminFilter = t.dataset.val; render(); },
+    adminSave: function (t) {
+      var uid = t.dataset.uid, id = t.dataset.id, key = uid + '/' + id;
+      var d = state.drafts[key];
+      if (!d) return;
+      var amt = String(d.quoteAmount || '').replace(/[^0-9]/g, '');
+      if (d.status === 'quoted' && !amt) { state.adminError = '견적서 발송 상태로 바꾸려면 견적 금액을 입력하세요.'; render(); return; }
+      state.adminError = null; state.busy = true; render();
+      writeItem(uid, id, { status: d.status, quoteAmount: amt ? Number(amt) : null, message: String(d.message || '').trim() }).then(function () {
+        state.busy = false; delete state.drafts[key]; render(); toast('저장했습니다. 고객 화면에 반영됩니다');
+      }).catch(function () {
+        state.busy = false; state.adminError = '저장하지 못했습니다. 잠시 후 다시 시도해 주세요.'; render();
+      });
+    }
+  };
+
+  document.addEventListener('click', function (e) {
+    var dlg = document.getElementById('workDialog');
+    if (e.target === dlg) { closeWork(); return; }
+    var t = e.target.closest('[data-act]');
+    if (!t) {
+      var a = e.target.closest('a[href^="#/"]');
+      if (a && a.getAttribute('href') === location.hash) { e.preventDefault(); closeMenu(); render(true); }
+      return;
+    }
+    var fn = ACTIONS[t.dataset.act];
+    if (!fn) return;
+    if (t.tagName === 'A' && t.dataset.act === 'closeWork') { closeWork(); return; }
+    if (t.tagName === 'A') e.preventDefault();
+    fn(t, e);
+  });
+  function onField(e) {
+    var t = e.target;
+    if (t.dataset.field) {
+      var k = t.dataset.field;
+      state.form[k] = t.type === 'checkbox' ? t.checked : t.value;
+      if (state.form.error && e.type === 'change') { state.form.error = ''; render(); }
+    } else if (t.dataset.est) {
+      state.est[t.dataset.est] = t.checked; render();
+    } else if (t.dataset.draft) {
+      var key = t.dataset.key;
+      state.drafts[key] = state.drafts[key] || {};
+      state.drafts[key][t.dataset.draft] = t.value;
+    }
+  }
+  document.addEventListener('input', function (e) { if (e.target.type !== 'checkbox') onField(e); });
+  document.addEventListener('change', function (e) { if (e.target.type === 'checkbox' || e.target.tagName === 'SELECT') onField(e); });
+  window.addEventListener('hashchange', function () { closeWork(); render(); });
+
+  document.getElementById('bizInfo').innerHTML = '<b>' + esc(SITE.brand) + '</b><span>상호 ' + esc(SITE.company) + ', 대표 ' + esc(SITE.ceo) + ', 사업자등록번호 ' + esc(SITE.bizNo) + '</span><span>통신판매업 신고번호 ' + esc(SITE.salesNo) + ', ' + esc(SITE.address) + '</span><span>이메일 ' + esc(SITE.email) + '</span>';
+
+  render();
+
+  /* ---------- 저장소 연결 ---------- */
+  var LOCAL_KEY = 'servicedesign-inquiries-v1';
+  function loadLocal() {
+    try {
+      var raw = window.localStorage.getItem(LOCAL_KEY);
+      if (raw) { var parsed = JSON.parse(raw); if (parsed && parsed.items) store.mem = parsed; }
+      store.persisted = true;
+    } catch (e) { store.persisted = false; }
+  }
+  function saveLocal() {
+    if (!store.persisted) return;
+    try { window.localStorage.setItem(LOCAL_KEY, JSON.stringify(store.mem)); } catch (e) { store.persisted = false; }
+  }
+  function useMemory() {
+    loadLocal();
+    store.mode = 'memory';
+    store.demo = true;
+    store.isAdmin = true;
+    render();
+  }
+  (function connect() {
+    if (!window.claude || typeof window.claude.use !== 'function') { useMemory(); return; }
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function (res) {
+      store.db = res[0]; store.user = res[1];
+      var u = store.user;
+      return Promise.all([u ? u.id() : null, u ? u.canEdit() : false]);
+    }).then(function (ids) {
+      store.uid = ids[0];
+      store.isAdmin = !!ids[1];
+      if (!store.db || !store.uid) { useMemory(); return; }
+      store.mode = 'db';
+      var firstMine = true;
+      store.db.doc('inquiries/' + store.uid).onSnapshot(function (snap) {
+        store.myDoc = snap.exists ? snap.data() : null;
+        var r = parseRoute().name;
+        if (firstMine || r === 'projects' || r === 'quote') render();
+        firstMine = false;
+      }, function () { toast('문의 내역을 불러오지 못했습니다. 새로고침해 주세요.'); });
+      if (store.isAdmin) {
+        store.db.collection('inquiries').onSnapshot(function (qs) {
+          store.adminDocs = qs.docs.map(function (d) { return { uid: d.id, data: d.data() }; });
+          if (parseRoute().name === 'admin') render();
+        }, function () { toast('관리자 목록을 불러오지 못했습니다.'); });
+      }
+      render();
+    }).catch(function () { useMemory(); });
+  })();
+})();
+</script>
+</body>
+</html>
